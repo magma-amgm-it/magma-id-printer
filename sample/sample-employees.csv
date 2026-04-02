@@ -1,0 +1,11 @@
+EmployeeID,FirstName,LastName,Department,JobTitle,BadgeNumber,Email,Phone
+EMP-001,John,Smith,Engineering,Software Engineer,B1001,john.smith@magma.com,+1-555-0101
+EMP-002,Sarah,Johnson,Marketing,Marketing Manager,B1002,sarah.johnson@magma.com,+1-555-0102
+EMP-003,Michael,Williams,Finance,Financial Analyst,B1003,michael.williams@magma.com,+1-555-0103
+EMP-004,Emily,Brown,Human Resources,HR Specialist,B1004,emily.brown@magma.com,+1-555-0104
+EMP-005,David,Jones,Engineering,Senior Developer,B1005,david.jones@magma.com,+1-555-0105
+EMP-006,Jessica,Davis,Operations,Operations Lead,B1006,jessica.davis@magma.com,+1-555-0106
+EMP-007,Robert,Wilson,Sales,Sales Representative,B1007,robert.wilson@magma.com,+1-555-0107
+EMP-008,Amanda,Taylor,Engineering,QA Engineer,B1008,amanda.taylor@magma.com,+1-555-0108
+EMP-009,Christopher,Anderson,Finance,Accounting Manager,B1009,chris.anderson@magma.com,+1-555-0109
+EMP-010,Jennifer,Martinez,Marketing,Content Strategist,B1010,jennifer.martinez@magma.com,+1-555-0110

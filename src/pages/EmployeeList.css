@@ -1,0 +1,211 @@
+.employee-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.search-bar:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: var(--space-4) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-count {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border-light);
+}
+
+/* Table */
+.employee-table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.employee-table th {
+  background: var(--bg-main);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.employee-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-card);
+}
+
+.employee-row {
+  cursor: pointer;
+  transition: background var(--duration-fast) ease;
+}
+
+.employee-row:hover td {
+  background: var(--accent-primary-bg);
+}
+
+.employee-row:last-child td {
+  border-bottom: none;
+}
+
+/* Photo indicator */
+.photo-indicator {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  color: var(--text-muted);
+}
+
+.photo-indicator.has-photo {
+  background: var(--accent-success-bg);
+  color: var(--accent-success);
+}
+
+/* Name cell */
+.employee-name-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.emp-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.emp-id {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Department badge */
+.dept-badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--accent-primary-bg);
+  color: var(--accent-primary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+}
+
+.cell-secondary {
+  color: var(--text-secondary);
+}
+
+.cell-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+/* Print button */
+.print-row-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  transition: all var(--duration-fast) ease;
+}
+
+.print-row-btn:hover {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+/* Empty state */
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) 0;
+  gap: var(--space-4);
+  color: var(--text-muted);
+}
+
+.empty-list h3 {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+}
+
+.empty-list p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-10) 0;
+  gap: var(--space-3);
+  color: var(--text-muted);
+}
+
+.no-results p {
+  font-size: var(--text-sm);
+}
+
+.loading-state {
+  padding: var(--space-10);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
