@@ -74,23 +74,45 @@ async function getListId(listName) {
 
 // ─── Employee data mapper ───────────────────────────────
 
+// SharePoint field name helpers
+// When columns are created with spaces (e.g., "First Name"),
+// SharePoint internal names use _x0020_ encoding (e.g., "First_x0020_Name")
+// The Graph API fields object may return either format depending on the context
+function getField(fields, ...names) {
+  for (const name of names) {
+    if (fields[name] !== undefined && fields[name] !== null) return fields[name];
+  }
+  return '';
+}
+
 function mapEmployeeFromSharePoint(item) {
   const f = item.fields;
+  const firstName = getField(f, 'First_x0020_Name', 'FirstName', 'First Name');
+  const lastName = getField(f, 'Last_x0020_Name', 'LastName', 'Last Name');
+  const department = getField(f, 'Department');
+  const jobTitle = getField(f, 'Job_x0020_Title', 'JobTitle', 'Job Title');
+  const badgeNumber = getField(f, 'Badge_x0020_Number', 'BadgeNumber', 'Badge Number');
+  const email = getField(f, 'Email');
+  const phone = getField(f, 'Phone');
+  const photoUrl = getField(f, 'Photo_x0020_Url', 'PhotoUrl', 'Photo Url');
+  const printCount = getField(f, 'Print_x0020_Count', 'PrintCount', 'Print Count') || 0;
+  const lastPrinted = getField(f, 'Last_x0020_Printed', 'LastPrinted', 'Last Printed') || null;
+
   return {
-    id: item.id, // SharePoint list item ID (for updates)
+    id: item.id,
     employeeId: f.Title || '',
-    firstName: f.FirstName || '',
-    lastName: f.LastName || '',
-    fullName: [f.FirstName, f.LastName].filter(Boolean).join(' '),
-    department: f.Department || '',
-    jobTitle: f.JobTitle || '',
-    badgeNumber: f.BadgeNumber || '',
-    email: f.Email || '',
-    phone: f.Phone || '',
-    photoUrl: f.PhotoUrl || '',
-    printCount: f.PrintCount || 0,
-    lastPrinted: f.LastPrinted || null,
-    searchText: [f.Title, f.FirstName, f.LastName, f.Department, f.JobTitle, f.BadgeNumber, f.Email]
+    firstName,
+    lastName,
+    fullName: [firstName, lastName].filter(Boolean).join(' '),
+    department,
+    jobTitle,
+    badgeNumber,
+    email,
+    phone,
+    photoUrl,
+    printCount: Number(printCount) || 0,
+    lastPrinted,
+    searchText: [f.Title, firstName, lastName, department, jobTitle, badgeNumber, email]
       .filter(Boolean).join(' ').toLowerCase(),
   };
 }
@@ -140,14 +162,14 @@ export async function createEmployee(employeeData) {
     body: {
       fields: {
         Title: employeeData.employeeId || '',
-        FirstName: employeeData.firstName || '',
-        LastName: employeeData.lastName || '',
+        First_x0020_Name: employeeData.firstName || '',
+        Last_x0020_Name: employeeData.lastName || '',
         Department: employeeData.department || '',
-        JobTitle: employeeData.jobTitle || '',
-        BadgeNumber: employeeData.badgeNumber || '',
+        Job_x0020_Title: employeeData.jobTitle || '',
+        Badge_x0020_Number: employeeData.badgeNumber || '',
         Email: employeeData.email || '',
         Phone: employeeData.phone || '',
-        PrintCount: 0,
+        Print_x0020_Count: 0,
       },
     },
   });
@@ -284,7 +306,7 @@ export async function uploadPhoto(employeeId, blob) {
   try {
     const emp = await getEmployee(employeeId);
     if (emp) {
-      await updateEmployee(emp.id, { PhotoUrl: fileData.webUrl });
+      await updateEmployee(emp.id, { Photo_x0020_Url: fileData.webUrl });
     }
   } catch (err) {
     console.warn('Could not update PhotoUrl on employee record:', err);

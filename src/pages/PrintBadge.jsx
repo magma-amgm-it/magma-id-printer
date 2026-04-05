@@ -150,8 +150,8 @@ export default function PrintBadge() {
       // Update print count on employee record
       if (employee.id) {
         await updateEmployee(employee.id, {
-          PrintCount: (employee.printCount || 0) + 1,
-          LastPrinted: new Date().toISOString(),
+          Print_x0020_Count: (employee.printCount || 0) + 1,
+          Last_x0020_Printed: new Date().toISOString(),
         })
       }
     } catch (err) {

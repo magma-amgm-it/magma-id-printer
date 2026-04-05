@@ -2,14 +2,14 @@ import * as XLSX from 'xlsx'
 
 // Common column name mappings
 const COLUMN_ALIASES = {
-  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'id', 'staffid', 'staff_id', 'number', 'empno', 'emp_no'],
+  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'id', 'staffid', 'staff_id', 'number', 'empno', 'emp_no', 'objectid'],
   firstName: ['firstname', 'first_name', 'first', 'fname', 'givenname', 'given_name'],
   lastName: ['lastname', 'last_name', 'last', 'lname', 'surname', 'familyname', 'family_name'],
   department: ['department', 'dept', 'division', 'team', 'group', 'unit'],
   jobTitle: ['jobtitle', 'job_title', 'title', 'position', 'role', 'designation'],
-  badgeNumber: ['badgenumber', 'badge_number', 'badge', 'badgeno', 'badge_no', 'cardnumber', 'card_number'],
-  email: ['email', 'emailaddress', 'email_address', 'mail', 'e-mail'],
-  phone: ['phone', 'phonenumber', 'phone_number', 'mobile', 'tel', 'telephone'],
+  badgeNumber: ['badgenumber', 'badge_number', 'badge', 'badgeno', 'badge_no', 'cardnumber', 'card_number', 'office'],
+  email: ['email', 'emailaddress', 'email_address', 'mail', 'e-mail', 'userprincipalname'],
+  phone: ['phone', 'phonenumber', 'phone_number', 'mobile', 'tel', 'telephone', 'mobilephone'],
 }
 
 function normalizeHeader(header) {
