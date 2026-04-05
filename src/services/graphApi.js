@@ -186,12 +186,17 @@ export async function updateEmployee(itemId, data) {
 
 export async function bulkCreateEmployees(employees, onProgress) {
   const results = [];
+  let successCount = 0;
+  let firstError = null;
+
   for (let i = 0; i < employees.length; i++) {
     try {
       const result = await createEmployee(employees[i]);
       results.push(result);
+      successCount++;
     } catch (err) {
-      console.error(`Failed to create employee ${i + 1}:`, err);
+      console.error(`Failed to create employee ${i + 1} (${employees[i].firstName} ${employees[i].lastName}):`, err.message);
+      if (!firstError) firstError = err.message;
       results.push({ error: err.message });
     }
     if (onProgress) onProgress(i + 1, employees.length);
@@ -200,7 +205,16 @@ export async function bulkCreateEmployees(employees, onProgress) {
       await new Promise((r) => setTimeout(r, 100));
     }
   }
-  return results;
+
+  if (successCount === 0 && firstError) {
+    throw new Error(`All imports failed. First error: ${firstError}`);
+  }
+
+  if (successCount < employees.length) {
+    console.warn(`Import completed with errors: ${successCount}/${employees.length} succeeded`);
+  }
+
+  return { results, successCount, failCount: employees.length - successCount };
 }
 
 // ─── Print History ──────────────────────────────────────
@@ -222,32 +236,40 @@ export async function addPrintRecord(employeeId, employeeName, printedBy) {
 }
 
 export async function getPrintHistory(limit = 5) {
-  const siteId = await getSiteId();
-  const listId = await getListId(LIST_NAMES.printHistory);
-  const data = await graphFetch(
-    `/sites/${siteId}/lists/${listId}/items?$expand=fields&$orderby=fields/PrintDate desc&$top=${limit}`
-  );
+  try {
+    const siteId = await getSiteId();
+    const listId = await getListId(LIST_NAMES.printHistory);
+    // Fetch all and sort client-side (avoids needing indexed columns)
+    const data = await graphFetch(
+      `/sites/${siteId}/lists/${listId}/items?$expand=fields&$top=100`
+    );
 
-  if (!data.value) return [];
-  return data.value.map((item) => ({
-    id: item.id,
-    employeeId: item.fields.Title,
-    employeeName: item.fields.EmployeeName || '',
-    printDate: item.fields.PrintDate,
-    printedBy: item.fields.PrintedBy || '',
-  }));
+    if (!data.value) return [];
+    const mapped = data.value.map((item) => ({
+      id: item.id,
+      employeeId: item.fields.Title,
+      employeeName: getField(item.fields, 'EmployeeName', 'Employee_x0020_Name'),
+      printDate: getField(item.fields, 'PrintDate', 'Print_x0020_Date'),
+      printedBy: getField(item.fields, 'PrintedBy', 'Printed_x0020_By'),
+    }));
+    // Sort by date descending, return top N
+    mapped.sort((a, b) => new Date(b.printDate || 0) - new Date(a.printDate || 0));
+    return mapped.slice(0, limit);
+  } catch (err) {
+    console.error('getPrintHistory error:', err);
+    return [];
+  }
 }
 
 export async function getPrintCountToday() {
-  const siteId = await getSiteId();
-  const listId = await getListId(LIST_NAMES.printHistory);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const filter = encodeURIComponent(`fields/PrintDate ge '${today.toISOString()}'`);
-  const data = await graphFetch(
-    `/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=${filter}&$top=999`
-  );
-  return data.value ? data.value.length : 0;
+  try {
+    const history = await getPrintHistory(100);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return history.filter((r) => new Date(r.printDate) >= today).length;
+  } catch {
+    return 0;
+  }
 }
 
 // ─── Photo Operations (Document Library) ────────────────
@@ -363,4 +385,20 @@ export function clearGraphCache() {
   Object.values(LIST_NAMES).forEach((name) => {
     localStorage.removeItem(`magma_hr_list_id_${name}`);
   });
+}
+
+// Debug: discover actual column internal names for a list
+export async function getListColumns(listName) {
+  const siteId = await getSiteId();
+  const listId = await getListId(listName);
+  const data = await graphFetch(
+    `/sites/${siteId}/lists/${listId}/columns?$select=name,displayName`
+  );
+  if (data.value) {
+    console.table(data.value.map((c) => ({
+      displayName: c.displayName,
+      internalName: c.name,
+    })));
+  }
+  return data.value || [];
 }

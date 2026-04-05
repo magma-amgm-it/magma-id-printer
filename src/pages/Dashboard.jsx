@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Users, Camera, Printer, Upload, Clock, ArrowRight } from 'lucide-react'
-import { getAllEmployees, getAllPhotoNames, getPrintCountToday, getPrintHistory } from '../services/graphApi'
+import { getAllEmployees, getAllPhotoNames, getPrintCountToday, getPrintHistory, getListColumns } from '../services/graphApi'
 import './Dashboard.css'
 
 export default function Dashboard() {
@@ -21,9 +21,12 @@ export default function Dashboard() {
 
   async function loadStats() {
     try {
+      // Debug: log actual SharePoint column names (check console)
+      getListColumns('Employee Badges').catch(() => {});
+
       const [employees, photoNames, printedToday, history] = await Promise.all([
         getAllEmployees(),
-        getAllPhotoNames(),
+        getAllPhotoNames().catch(() => []),
         getPrintCountToday(),
         getPrintHistory(5),
       ])
