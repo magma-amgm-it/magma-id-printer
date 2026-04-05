@@ -87,16 +87,16 @@ function getField(fields, ...names) {
 
 function mapEmployeeFromSharePoint(item) {
   const f = item.fields;
-  const firstName = getField(f, 'First_x0020_Name', 'FirstName', 'First Name');
-  const lastName = getField(f, 'Last_x0020_Name', 'LastName', 'Last Name');
-  const department = getField(f, 'Department');
-  const jobTitle = getField(f, 'Job_x0020_Title', 'JobTitle', 'Job Title');
-  const badgeNumber = getField(f, 'Badge_x0020_Number', 'BadgeNumber', 'Badge Number');
-  const email = getField(f, 'Email');
-  const phone = getField(f, 'Phone');
-  const photoUrl = getField(f, 'Photo_x0020_Url', 'PhotoUrl', 'Photo Url');
-  const printCount = getField(f, 'Print_x0020_Count', 'PrintCount', 'Print Count') || 0;
-  const lastPrinted = getField(f, 'Last_x0020_Printed', 'LastPrinted', 'Last Printed') || null;
+  const firstName = f.FirstName || '';
+  const lastName = f.LastName || '';
+  const department = f.Department || '';
+  const jobTitle = f.JobTitle || '';
+  const badgeNumber = f.BadgeNumber || '';
+  const email = f.Email || '';
+  const phone = f.Phone || '';
+  const photoUrl = f.PhotoURL || '';
+  const printCount = f.PrintCount || 0;
+  const lastPrinted = f.LastPrinted || null;
 
   return {
     id: item.id,
@@ -162,14 +162,14 @@ export async function createEmployee(employeeData) {
     body: {
       fields: {
         Title: employeeData.employeeId || '',
-        First_x0020_Name: employeeData.firstName || '',
-        Last_x0020_Name: employeeData.lastName || '',
+        FirstName: employeeData.firstName || '',
+        LastName: employeeData.lastName || '',
         Department: employeeData.department || '',
-        Job_x0020_Title: employeeData.jobTitle || '',
-        Badge_x0020_Number: employeeData.badgeNumber || '',
+        JobTitle: employeeData.jobTitle || '',
+        BadgeNumber: employeeData.badgeNumber || '',
         Email: employeeData.email || '',
         Phone: employeeData.phone || '',
-        Print_x0020_Count: 0,
+        PrintCount: 0,
       },
     },
   });
@@ -328,7 +328,7 @@ export async function uploadPhoto(employeeId, blob) {
   try {
     const emp = await getEmployee(employeeId);
     if (emp) {
-      await updateEmployee(emp.id, { Photo_x0020_Url: fileData.webUrl });
+      await updateEmployee(emp.id, { PhotoURL: fileData.webUrl });
     }
   } catch (err) {
     console.warn('Could not update PhotoUrl on employee record:', err);
