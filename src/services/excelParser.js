@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx'
 
 // Common column name mappings
 const COLUMN_ALIASES = {
-  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'id', 'staffid', 'staff_id', 'number', 'empno', 'emp_no', 'objectid'],
+  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'staffid', 'staff_id', 'number', 'empno', 'emp_no'],
   firstName: ['firstname', 'first_name', 'first', 'fname', 'givenname', 'given_name'],
   lastName: ['lastname', 'last_name', 'last', 'lname', 'surname', 'familyname', 'family_name'],
   department: ['department', 'dept', 'division', 'team', 'group', 'unit'],

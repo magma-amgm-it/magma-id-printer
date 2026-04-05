@@ -143,15 +143,25 @@ export async function getAllEmployees() {
 export async function getEmployee(employeeId) {
   const siteId = await getSiteId();
   const listId = await getListId(LIST_NAMES.employees);
-  const filter = encodeURIComponent(`fields/Title eq '${employeeId}'`);
-  const data = await graphFetch(
-    `/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=${filter}`
-  );
 
-  if (data.value && data.value.length > 0) {
-    return mapEmployeeFromSharePoint(data.value[0]);
+  // Try filter by Title field first
+  try {
+    const filter = encodeURIComponent(`fields/Title eq '${employeeId}'`);
+    const data = await graphFetch(
+      `/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=${filter}`
+    );
+    if (data.value && data.value.length > 0) {
+      return mapEmployeeFromSharePoint(data.value[0]);
+    }
+  } catch (err) {
+    console.warn('Filter search failed, trying full scan:', err.message);
   }
-  return null;
+
+  // Fallback: fetch all and find by employeeId or SharePoint item id
+  const allEmployees = await getAllEmployees();
+  return allEmployees.find(
+    (emp) => emp.employeeId === employeeId || emp.id === employeeId
+  ) || null;
 }
 
 export async function createEmployee(employeeData) {
