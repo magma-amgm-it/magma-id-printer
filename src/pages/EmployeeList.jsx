@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, User, Camera, Printer, Upload, UserCircle } from 'lucide-react'
-import { getAllEmployees, getAllPhotoNames } from '../services/graphApi'
+import { Search, User, Camera, Printer, Upload, UserCircle, Trash2 } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { getAllEmployees, getAllPhotoNames, deleteAllEmployees } from '../services/graphApi'
 import './EmployeeList.css'
 
 export default function EmployeeList() {
@@ -11,6 +12,8 @@ export default function EmployeeList() {
   const [photoIds, setPhotoIds] = useState(new Set())
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteProgress, setDeleteProgress] = useState(null)
 
   useEffect(() => {
     loadData()
@@ -31,6 +34,27 @@ export default function EmployeeList() {
       console.error('Failed to load employees:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleDeleteAll() {
+    if (!window.confirm(`Are you sure you want to delete all ${employees.length} employees from SharePoint? This cannot be undone.`)) {
+      return
+    }
+    setDeleting(true)
+    setDeleteProgress({ current: 0, total: employees.length })
+    try {
+      const { deleted } = await deleteAllEmployees((current, total) => {
+        setDeleteProgress({ current, total })
+      })
+      toast.success(`Deleted ${deleted} employees from SharePoint`)
+      setEmployees([])
+      setPhotoIds(new Set())
+    } catch (err) {
+      toast.error(`Delete failed: ${err.message}`)
+    } finally {
+      setDeleting(false)
+      setDeleteProgress(null)
     }
   }
 
@@ -83,6 +107,18 @@ export default function EmployeeList() {
         <span className="search-count">
           {filtered.length} of {employees.length}
         </span>
+        <button
+          className="btn btn-ghost btn-sm"
+          onClick={handleDeleteAll}
+          disabled={deleting || employees.length === 0}
+          style={{ color: 'var(--accent-danger)', marginLeft: 8, whiteSpace: 'nowrap' }}
+          title="Delete all employees from SharePoint"
+        >
+          <Trash2 size={14} />
+          {deleting && deleteProgress
+            ? `Deleting ${deleteProgress.current}/${deleteProgress.total}...`
+            : 'Delete All'}
+        </button>
       </div>
 
       {/* Employee Table */}

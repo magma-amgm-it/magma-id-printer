@@ -217,6 +217,34 @@ export async function bulkCreateEmployees(employees, onProgress) {
   return { results, successCount, failCount: employees.length - successCount };
 }
 
+export async function deleteEmployee(itemId) {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.employees);
+  return graphFetch(`/sites/${siteId}/lists/${listId}/items/${itemId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function deleteAllEmployees(onProgress) {
+  const employees = await getAllEmployees();
+  let deleted = 0;
+
+  for (let i = 0; i < employees.length; i++) {
+    try {
+      await deleteEmployee(employees[i].id);
+      deleted++;
+    } catch (err) {
+      console.error(`Failed to delete item ${employees[i].id}:`, err);
+    }
+    if (onProgress) onProgress(i + 1, employees.length);
+    if ((i + 1) % 10 === 0 && i + 1 < employees.length) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }
+
+  return { deleted, total: employees.length };
+}
+
 // ─── Print History ──────────────────────────────────────
 
 export async function addPrintRecord(employeeId, employeeName, printedBy) {
