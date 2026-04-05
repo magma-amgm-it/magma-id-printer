@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search, User, Camera, Printer, Upload, UserCircle } from 'lucide-react'
-import { getAllEmployees, getAllPhotoIds } from '../services/dataManager'
+import { getAllEmployees, getAllPhotoNames } from '../services/graphApi'
 import './EmployeeList.css'
 
 export default function EmployeeList() {
@@ -18,13 +18,20 @@ export default function EmployeeList() {
 
   async function loadData() {
     setLoading(true)
-    const [emps, photos] = await Promise.all([
-      getAllEmployees(),
-      getAllPhotoIds(),
-    ])
-    setEmployees(emps)
-    setPhotoIds(new Set(photos))
-    setLoading(false)
+    try {
+      const [emps, photoFileNames] = await Promise.all([
+        getAllEmployees(),
+        getAllPhotoNames(),
+      ])
+      setEmployees(emps)
+      // Extract employee IDs from filenames like "EMP001.jpg"
+      const ids = photoFileNames.map((name) => name.replace(/\.[^.]+$/, ''))
+      setPhotoIds(new Set(ids))
+    } catch (err) {
+      console.error('Failed to load employees:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const filtered = useMemo(() => {

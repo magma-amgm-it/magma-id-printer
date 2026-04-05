@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Users, Camera, Printer, Upload, Clock, ArrowRight } from 'lucide-react'
-import { getEmployeeCount, getPhotoCount, getPrintCountToday, getPrintHistory, getSetting } from '../services/dataManager'
+import { getAllEmployees, getAllPhotoNames, getPrintCountToday, getPrintHistory } from '../services/graphApi'
 import './Dashboard.css'
 
 export default function Dashboard() {
@@ -20,16 +20,25 @@ export default function Dashboard() {
   }, [])
 
   async function loadStats() {
-    const [totalEmployees, photosUploaded, printedToday, history, importInfo] = await Promise.all([
-      getEmployeeCount(),
-      getPhotoCount(),
-      getPrintCountToday(),
-      getPrintHistory(5),
-      getSetting('lastImport'),
-    ])
-    setStats({ totalEmployees, photosUploaded, printedToday })
-    setRecentPrints(history)
-    setLastImport(importInfo)
+    try {
+      const [employees, photoNames, printedToday, history] = await Promise.all([
+        getAllEmployees(),
+        getAllPhotoNames(),
+        getPrintCountToday(),
+        getPrintHistory(5),
+      ])
+      setStats({
+        totalEmployees: employees.length,
+        photosUploaded: photoNames.length,
+        printedToday,
+      })
+      setRecentPrints(history)
+      // Last import info from localStorage
+      const importInfo = JSON.parse(localStorage.getItem('magma_last_import') || 'null')
+      setLastImport(importInfo)
+    } catch (err) {
+      console.error('Failed to load dashboard stats:', err)
+    }
   }
 
   const kpiCards = [

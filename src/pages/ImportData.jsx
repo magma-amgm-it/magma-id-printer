@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FileSpreadsheet, Check, AlertCircle, ChevronRight, X, ArrowRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { parseFile, transformData, getFieldOptions } from '../services/excelParser'
-import { saveEmployees } from '../services/dataManager'
+import { bulkCreateEmployees } from '../services/graphApi'
 import './ImportData.css'
 
 const STEPS = ['Upload File', 'Map Columns', 'Preview & Save']
@@ -20,6 +20,7 @@ export default function ImportData() {
   const [columnMapping, setColumnMapping] = useState({})
   const [previewData, setPreviewData] = useState([])
   const [saving, setSaving] = useState(false)
+  const [saveProgress, setSaveProgress] = useState(null)
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault()
@@ -84,14 +85,22 @@ export default function ImportData() {
 
   async function handleSave() {
     setSaving(true)
+    setSaveProgress({ current: 0, total: previewData.length })
     try {
-      const count = await saveEmployees(previewData)
-      toast.success(`Successfully imported ${count} employees!`)
+      await bulkCreateEmployees(previewData, (current, total) => {
+        setSaveProgress({ current, total })
+      })
+      localStorage.setItem('magma_last_import', JSON.stringify({
+        count: previewData.length,
+        date: new Date().toISOString(),
+      }))
+      toast.success(`Successfully imported ${previewData.length} employees!`)
       navigate('/employees')
     } catch (err) {
       toast.error(`Save failed: ${err.message}`)
     } finally {
       setSaving(false)
+      setSaveProgress(null)
     }
   }
 
@@ -258,7 +267,9 @@ export default function ImportData() {
                   onClick={handleSave}
                   disabled={saving}
                 >
-                  {saving ? 'Saving...' : `Import ${previewData.length} Employees`}
+                  {saving && saveProgress
+                    ? `Saving ${saveProgress.current} of ${saveProgress.total}...`
+                    : saving ? 'Saving...' : `Import ${previewData.length} Employees`}
                   {!saving && <Check size={18} />}
                 </button>
               </div>

@@ -8,9 +8,10 @@ import {
 import Webcam from 'react-webcam'
 import toast from 'react-hot-toast'
 import {
-  getEmployee, searchEmployees, savePhoto, getPhoto,
-  addPrintRecord, getAllPhotoIds
-} from '../services/dataManager'
+  getEmployee, getAllEmployees, uploadPhoto, downloadPhoto,
+  addPrintRecord, updateEmployee
+} from '../services/graphApi'
+import { getActiveAccount } from '../services/auth'
 import { blobToDataUrl, printBadge } from '../services/printService'
 import './PrintBadge.css'
 
@@ -40,27 +41,35 @@ export default function PrintBadge() {
   }, [employeeId])
 
   async function loadEmployee(id) {
-    const emp = await getEmployee(id)
-    if (emp) {
-      setEmployee(emp)
-      setShowSearch(false)
+    try {
+      const emp = await getEmployee(id)
+      if (emp) {
+        setEmployee(emp)
+        setShowSearch(false)
 
-      // Load existing photo
-      const photo = await getPhoto(id)
-      if (photo) {
-        const url = await blobToDataUrl(photo.photoBlob)
+        // Load existing photo from SharePoint
+        const url = await downloadPhoto(id)
         setPhotoDataUrl(url)
-      } else {
-        setPhotoDataUrl(null)
       }
+    } catch (err) {
+      console.error('Failed to load employee:', err)
+      toast.error('Failed to load employee data')
     }
   }
 
   async function handleSearch(query) {
     setSearchQuery(query)
     if (query.trim().length >= 1) {
-      const results = await searchEmployees(query)
-      setSearchResults(results.slice(0, 10))
+      try {
+        const allEmployees = await getAllEmployees()
+        const terms = query.toLowerCase().split(/\s+/)
+        const results = allEmployees.filter((emp) =>
+          terms.every((term) => emp.searchText?.includes(term))
+        )
+        setSearchResults(results.slice(0, 10))
+      } catch (err) {
+        console.error('Search failed:', err)
+      }
     } else {
       setSearchResults([])
     }
@@ -84,11 +93,16 @@ export default function PrintBadge() {
     const res = await fetch(imageSrc)
     const blob = await res.blob()
 
-    // Save to IndexedDB
-    await savePhoto(employee.employeeId, blob, 'webcam')
-    setPhotoDataUrl(imageSrc)
-    setShowWebcam(false)
-    toast.success('Photo captured!')
+    // Upload to SharePoint
+    try {
+      await uploadPhoto(employee.employeeId, blob)
+      setPhotoDataUrl(imageSrc)
+      setShowWebcam(false)
+      toast.success('Photo captured and uploaded!')
+    } catch (err) {
+      console.error('Photo upload failed:', err)
+      toast.error('Failed to upload photo')
+    }
   }, [employee])
 
   // File upload
@@ -105,13 +119,18 @@ export default function PrintBadge() {
     reader.onload = async (ev) => {
       const dataUrl = ev.target.result
 
-      // Convert to blob for storage
+      // Convert to blob for upload to SharePoint
       const res = await fetch(dataUrl)
       const blob = await res.blob()
 
-      await savePhoto(employee.employeeId, blob, 'upload')
-      setPhotoDataUrl(dataUrl)
-      toast.success('Photo uploaded!')
+      try {
+        await uploadPhoto(employee.employeeId, blob)
+        setPhotoDataUrl(dataUrl)
+        toast.success('Photo uploaded!')
+      } catch (err) {
+        console.error('Photo upload failed:', err)
+        toast.error('Failed to upload photo')
+      }
     }
     reader.readAsDataURL(file)
     e.target.value = ''
@@ -121,7 +140,24 @@ export default function PrintBadge() {
   async function handlePrint() {
     if (!employee) return
 
-    await addPrintRecord(employee.employeeId, employee.fullName || `${employee.firstName} ${employee.lastName}`)
+    try {
+      const account = getActiveAccount()
+      const printedBy = account?.username || 'unknown'
+      const empName = employee.fullName || `${employee.firstName} ${employee.lastName}`
+
+      await addPrintRecord(employee.employeeId, empName, printedBy)
+
+      // Update print count on employee record
+      if (employee.id) {
+        await updateEmployee(employee.id, {
+          PrintCount: (employee.printCount || 0) + 1,
+          LastPrinted: new Date().toISOString(),
+        })
+      }
+    } catch (err) {
+      console.error('Failed to record print:', err)
+    }
+
     setShowPrintModal(false)
     toast.success('Printing badge...')
 
