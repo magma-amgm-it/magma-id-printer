@@ -1,12 +1,16 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Upload, Users, Printer, CreditCard, LogOut } from 'lucide-react'
+import { LayoutDashboard, Upload, Users, Printer, CreditCard, LogOut, GraduationCap } from 'lucide-react'
 import './Sidebar.css'
 
-const navItems = [
-  { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+const employeeNav = [
   { path: '/import', icon: Upload, label: 'Import Data' },
   { path: '/employees', icon: Users, label: 'Employees' },
   { path: '/print', icon: Printer, label: 'Print Badge' },
+]
+
+const clientNav = [
+  { path: '/clients', icon: GraduationCap, label: 'Clients' },
+  { path: '/print-client', icon: Printer, label: 'Print Client ID' },
 ]
 
 export default function Sidebar({ user, onLogout }) {
@@ -15,6 +19,13 @@ export default function Sidebar({ user, onLogout }) {
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : '?'
+
+  function linkClass(path) {
+    const isActive = location.pathname === path ||
+      (path === '/print' && location.pathname.startsWith('/print/')) ||
+      (path === '/print-client' && location.pathname.startsWith('/print-client/'))
+    return `sidebar-link ${isActive ? 'active' : ''}`
+  }
 
   return (
     <aside className="sidebar">
@@ -29,14 +40,22 @@ export default function Sidebar({ user, onLogout }) {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map(({ path, icon: Icon, label }) => (
-          <NavLink
-            key={path}
-            to={path}
-            className={({ isActive }) =>
-              `sidebar-link ${isActive || (path === '/print' && location.pathname.startsWith('/print')) ? 'active' : ''}`
-            }
-          >
+        <NavLink to="/dashboard" className={linkClass('/dashboard')}>
+          <LayoutDashboard size={20} strokeWidth={1.5} />
+          <span>Dashboard</span>
+        </NavLink>
+
+        <div className="sidebar-section-label">Employees</div>
+        {employeeNav.map(({ path, icon: Icon, label }) => (
+          <NavLink key={path} to={path} className={linkClass(path)}>
+            <Icon size={20} strokeWidth={1.5} />
+            <span>{label}</span>
+          </NavLink>
+        ))}
+
+        <div className="sidebar-section-label">Language School</div>
+        {clientNav.map(({ path, icon: Icon, label }) => (
+          <NavLink key={path} to={path} className={linkClass(path)}>
             <Icon size={20} strokeWidth={1.5} />
             <span>{label}</span>
           </NavLink>
@@ -68,7 +87,7 @@ export default function Sidebar({ user, onLogout }) {
 
       <div className="sidebar-footer">
         <div className="sidebar-version">
-          <span>v2.0.0</span>
+          <span>v2.1.0</span>
           <span className="separator">|</span>
           <span>Evolis Primacy 2</span>
         </div>

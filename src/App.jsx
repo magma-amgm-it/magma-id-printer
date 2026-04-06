@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard'
 import ImportData from './pages/ImportData'
 import EmployeeList from './pages/EmployeeList'
 import PrintBadge from './pages/PrintBadge'
+import ClientList from './pages/ClientList'
+import PrintClient from './pages/PrintClient'
 import './App.css'
 
 function LoginScreen({ onLogin, loading, error }) {
@@ -175,6 +177,8 @@ function App() {
           <Route path="/import" element={<PageWrapper title="Import Data"><ImportData /></PageWrapper>} />
           <Route path="/employees" element={<PageWrapper title="Employees"><EmployeeList /></PageWrapper>} />
           <Route path="/print/:employeeId?" element={<PageWrapper title="Print Badge"><PrintBadge /></PageWrapper>} />
+          <Route path="/clients" element={<PageWrapper title="Clients"><ClientList /></PageWrapper>} />
+          <Route path="/print-client/:clientId?" element={<PageWrapper title="Print Client ID"><PrintClient /></PageWrapper>} />
         </Routes>
       </main>
     </div>

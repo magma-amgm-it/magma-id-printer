@@ -6,6 +6,7 @@ const SHAREPOINT_SITE_URL = import.meta.env.VITE_SHAREPOINT_SITE_URL;
 const LIST_NAMES = {
   employees: 'Employee Badges',
   printHistory: 'Badge Print History',
+  clients: 'Language School Clients',
 };
 
 // ─── Helpers ─────────────────────────────────────────────
@@ -310,32 +311,149 @@ export async function getPrintCountToday() {
   }
 }
 
+// ─── Client CRUD ────────────────────────────────────────
+
+function mapClientFromSharePoint(item) {
+  const f = item.fields;
+  const firstName = f.FirstName || '';
+  const lastName = f.LastName || '';
+  return {
+    id: item.id,
+    clientId: f.Title || '',
+    firstName,
+    lastName,
+    fullName: [firstName, lastName].filter(Boolean).join(' '),
+    program: f.Program || '',
+    email: f.Email || '',
+    phone: f.Phone || '',
+    startDate: f.StartDate || '',
+    photoUrl: f.PhotoURL || '',
+    searchText: [f.Title, firstName, lastName, f.Program, f.Email]
+      .filter(Boolean).join(' ').toLowerCase(),
+    _type: 'client',
+  };
+}
+
+export async function getAllClients() {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.clients);
+
+  let allItems = [];
+  let nextLink = `/sites/${siteId}/lists/${listId}/items?$expand=fields&$top=999`;
+
+  while (nextLink) {
+    const url = nextLink.startsWith('http')
+      ? nextLink.replace(GRAPH_BASE, '')
+      : nextLink;
+    const data = await graphFetch(url);
+    if (data.value) allItems = allItems.concat(data.value);
+    nextLink = data['@odata.nextLink'] || null;
+  }
+
+  return allItems.map(mapClientFromSharePoint);
+}
+
+export async function getClient(clientId) {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.clients);
+
+  try {
+    const filter = encodeURIComponent(`fields/Title eq '${clientId}'`);
+    const data = await graphFetch(
+      `/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=${filter}`
+    );
+    if (data.value && data.value.length > 0) {
+      return mapClientFromSharePoint(data.value[0]);
+    }
+  } catch (err) {
+    console.warn('Client filter search failed, trying full scan:', err.message);
+  }
+
+  const allClients = await getAllClients();
+  return allClients.find(
+    (c) => c.clientId === clientId || c.id === clientId
+  ) || null;
+}
+
+export async function createClient(clientData) {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.clients);
+  return graphFetch(`/sites/${siteId}/lists/${listId}/items`, {
+    method: 'POST',
+    body: {
+      fields: {
+        Title: clientData.clientId || '',
+        FirstName: clientData.firstName || '',
+        LastName: clientData.lastName || '',
+        Program: clientData.program || '',
+        Email: clientData.email || '',
+        Phone: clientData.phone || '',
+        StartDate: clientData.startDate || null,
+      },
+    },
+  });
+}
+
+export async function updateClient(itemId, data) {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.clients);
+  return graphFetch(`/sites/${siteId}/lists/${listId}/items/${itemId}/fields`, {
+    method: 'PATCH',
+    body: data,
+  });
+}
+
+export async function deleteAllClients(onProgress) {
+  const clients = await getAllClients();
+  let deleted = 0;
+
+  for (let i = 0; i < clients.length; i++) {
+    try {
+      const siteId = await getSiteId();
+      const listId = await getListId(LIST_NAMES.clients);
+      await graphFetch(`/sites/${siteId}/lists/${listId}/items/${clients[i].id}`, {
+        method: 'DELETE',
+      });
+      deleted++;
+    } catch (err) {
+      console.error(`Failed to delete client ${clients[i].id}:`, err);
+    }
+    if (onProgress) onProgress(i + 1, clients.length);
+    if ((i + 1) % 10 === 0 && i + 1 < clients.length) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }
+
+  return { deleted, total: clients.length };
+}
+
 // ─── Photo Operations (Document Library) ────────────────
 
 const photoBlobCache = new Map();
 
-async function getDriveId() {
-  const cached = localStorage.getItem('magma_hr_drive_id');
+async function getDriveId(libraryName = 'Employee Photos') {
+  const cacheKey = `magma_hr_drive_id_${libraryName}`;
+  const cached = localStorage.getItem(cacheKey);
   if (cached) return cached;
 
   const siteId = await getSiteId();
   const data = await graphFetch(`/sites/${siteId}/drives`);
   const photoDrive = data.value.find(
-    (d) => d.name === 'Employee Photos'
+    (d) => d.name === libraryName
   );
 
   if (!photoDrive) {
-    throw new Error('Employee Photos document library not found on the SharePoint site.');
+    throw new Error(`${libraryName} document library not found on the SharePoint site.`);
   }
 
-  localStorage.setItem('magma_hr_drive_id', photoDrive.id);
+  localStorage.setItem(cacheKey, photoDrive.id);
   return photoDrive.id;
 }
 
-export async function uploadPhoto(employeeId, blob) {
+export async function uploadPhoto(personId, blob, library = 'Employee Photos') {
   const token = await getAccessToken();
-  const driveId = await getDriveId();
-  const fileName = `${employeeId}.jpg`;
+  const driveId = await getDriveId(library);
+  const fileName = `${personId}.jpg`;
 
   const response = await fetch(
     `${GRAPH_BASE}/drives/${driveId}/root:/${fileName}:/content`,
@@ -354,37 +472,40 @@ export async function uploadPhoto(employeeId, blob) {
     throw new Error(`Photo upload failed: ${response.status} — ${errorBody}`);
   }
 
-  // Invalidate cache for this employee
-  if (photoBlobCache.has(employeeId)) {
-    URL.revokeObjectURL(photoBlobCache.get(employeeId));
-    photoBlobCache.delete(employeeId);
+  const cacheKey = `${library}:${personId}`;
+  if (photoBlobCache.has(cacheKey)) {
+    URL.revokeObjectURL(photoBlobCache.get(cacheKey));
+    photoBlobCache.delete(cacheKey);
   }
 
   const fileData = await response.json();
 
-  // Update employee's PhotoUrl field in the list
+  // Update PhotoURL field on the record
   try {
-    const emp = await getEmployee(employeeId);
-    if (emp) {
-      await updateEmployee(emp.id, { PhotoURL: fileData.webUrl });
+    if (library === 'Client Photos') {
+      const client = await getClient(personId);
+      if (client) await updateClient(client.id, { PhotoURL: fileData.webUrl });
+    } else {
+      const emp = await getEmployee(personId);
+      if (emp) await updateEmployee(emp.id, { PhotoURL: fileData.webUrl });
     }
   } catch (err) {
-    console.warn('Could not update PhotoUrl on employee record:', err);
+    console.warn('Could not update PhotoURL on record:', err);
   }
 
   return fileData;
 }
 
-export async function downloadPhoto(employeeId) {
-  // Return cached blob URL if available
-  if (photoBlobCache.has(employeeId)) {
-    return photoBlobCache.get(employeeId);
+export async function downloadPhoto(personId, library = 'Employee Photos') {
+  const cacheKey = `${library}:${personId}`;
+  if (photoBlobCache.has(cacheKey)) {
+    return photoBlobCache.get(cacheKey);
   }
 
   try {
     const token = await getAccessToken();
-    const driveId = await getDriveId();
-    const fileName = `${employeeId}.jpg`;
+    const driveId = await getDriveId(library);
+    const fileName = `${personId}.jpg`;
 
     const response = await fetch(
       `${GRAPH_BASE}/drives/${driveId}/root:/${fileName}:/content`,
@@ -397,16 +518,16 @@ export async function downloadPhoto(employeeId) {
 
     const blob = await response.blob();
     const blobUrl = URL.createObjectURL(blob);
-    photoBlobCache.set(employeeId, blobUrl);
+    photoBlobCache.set(cacheKey, blobUrl);
     return blobUrl;
   } catch {
     return null;
   }
 }
 
-export async function getAllPhotoNames() {
+export async function getAllPhotoNames(library = 'Employee Photos') {
   try {
-    const driveId = await getDriveId();
+    const driveId = await getDriveId(library);
     const data = await graphFetch(`/drives/${driveId}/root/children?$select=name&$top=999`);
     if (!data.value) return [];
     return data.value.map((f) => f.name);
@@ -419,7 +540,8 @@ export async function getAllPhotoNames() {
 
 export function clearGraphCache() {
   localStorage.removeItem('magma_hr_site_id');
-  localStorage.removeItem('magma_hr_drive_id');
+  localStorage.removeItem('magma_hr_drive_id_Employee Photos');
+  localStorage.removeItem('magma_hr_drive_id_Client Photos');
   Object.values(LIST_NAMES).forEach((name) => {
     localStorage.removeItem(`magma_hr_list_id_${name}`);
   });

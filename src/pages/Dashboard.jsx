@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Users, Camera, Printer, Upload, Clock, ArrowRight } from 'lucide-react'
-import { getAllEmployees, getAllPhotoNames, getPrintCountToday, getPrintHistory, getListColumns } from '../services/graphApi'
+import { Users, Camera, Printer, Upload, Clock, ArrowRight, GraduationCap } from 'lucide-react'
+import { getAllEmployees, getAllClients, getAllPhotoNames, getPrintCountToday, getPrintHistory, getListColumns } from '../services/graphApi'
 import './Dashboard.css'
 
 export default function Dashboard() {
   const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalEmployees: 0,
+    totalClients: 0,
     photosUploaded: 0,
     printedToday: 0,
   })
@@ -24,14 +25,16 @@ export default function Dashboard() {
       // Debug: log actual SharePoint column names (check console)
       getListColumns('Employee Badges').catch(() => {});
 
-      const [employees, photoNames, printedToday, history] = await Promise.all([
+      const [employees, clients, photoNames, printedToday, history] = await Promise.all([
         getAllEmployees(),
+        getAllClients().catch(() => []),
         getAllPhotoNames().catch(() => []),
         getPrintCountToday(),
         getPrintHistory(5),
       ])
       setStats({
         totalEmployees: employees.length,
+        totalClients: clients.length,
         photosUploaded: photoNames.length,
         printedToday,
       })
@@ -53,10 +56,11 @@ export default function Dashboard() {
       onClick: () => navigate('/employees'),
     },
     {
-      label: 'Photos Captured',
-      value: stats.photosUploaded,
-      icon: Camera,
+      label: 'Total Clients',
+      value: stats.totalClients,
+      icon: GraduationCap,
       color: 'purple',
+      onClick: () => navigate('/clients'),
     },
     {
       label: 'Printed Today',
