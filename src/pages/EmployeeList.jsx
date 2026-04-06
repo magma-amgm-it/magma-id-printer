@@ -1,10 +1,20 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Search, User, Camera, Printer, Upload, UserCircle, Trash2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, User, Camera, Printer, Upload, UserCircle, Trash2, Plus, X, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getAllEmployees, getAllPhotoNames, deleteAllEmployees } from '../services/graphApi'
+import { getAllEmployees, getAllPhotoNames, deleteAllEmployees, createEmployee } from '../services/graphApi'
 import './EmployeeList.css'
+
+const EMPTY_FORM = {
+  firstName: '',
+  lastName: '',
+  department: '',
+  jobTitle: '',
+  badgeNumber: '',
+  email: '',
+  phone: '',
+}
 
 export default function EmployeeList() {
   const navigate = useNavigate()
@@ -14,6 +24,11 @@ export default function EmployeeList() {
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [deleteProgress, setDeleteProgress] = useState(null)
+
+  // Add employee modal
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addForm, setAddForm] = useState(EMPTY_FORM)
+  const [adding, setAdding] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -27,7 +42,6 @@ export default function EmployeeList() {
         getAllPhotoNames(),
       ])
       setEmployees(emps)
-      // Extract employee IDs from filenames like "EMP001.jpg"
       const ids = photoFileNames.map((name) => name.replace(/\.[^.]+$/, ''))
       setPhotoIds(new Set(ids))
     } catch (err) {
@@ -58,6 +72,38 @@ export default function EmployeeList() {
     }
   }
 
+  function handleFormChange(field, value) {
+    setAddForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  async function handleAddEmployee() {
+    if (!addForm.firstName.trim() && !addForm.lastName.trim()) {
+      toast.error('Please enter at least a first or last name.')
+      return
+    }
+
+    setAdding(true)
+    try {
+      // Generate employee ID
+      const nextNum = employees.length + 1
+      const employeeId = `EMP-${String(nextNum).padStart(4, '0')}`
+
+      await createEmployee({
+        employeeId,
+        ...addForm,
+      })
+
+      toast.success(`Added ${addForm.firstName} ${addForm.lastName}!`)
+      setShowAddModal(false)
+      setAddForm(EMPTY_FORM)
+      loadData() // Refresh the list
+    } catch (err) {
+      toast.error(`Failed to add employee: ${err.message}`)
+    } finally {
+      setAdding(false)
+    }
+  }
+
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return employees
 
@@ -81,12 +127,28 @@ export default function EmployeeList() {
         <div className="empty-list">
           <Upload size={48} strokeWidth={1} />
           <h3>No employees loaded</h3>
-          <p>Import your employee data to get started</p>
-          <button className="btn btn-primary" onClick={() => navigate('/import')}>
-            <Upload size={16} />
-            Import Data
-          </button>
+          <p>Import your employee data or add employees manually</p>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="btn btn-primary" onClick={() => navigate('/import')}>
+              <Upload size={16} />
+              Import Data
+            </button>
+            <button className="btn btn-ghost" onClick={() => setShowAddModal(true)}>
+              <Plus size={16} />
+              Add Employee
+            </button>
+          </div>
         </div>
+
+        {/* Add Modal (also available from empty state) */}
+        <AddEmployeeModal
+          show={showAddModal}
+          form={addForm}
+          adding={adding}
+          onChange={handleFormChange}
+          onSave={handleAddEmployee}
+          onClose={() => { setShowAddModal(false); setAddForm(EMPTY_FORM) }}
+        />
       </div>
     )
   }
@@ -108,15 +170,23 @@ export default function EmployeeList() {
           {filtered.length} of {employees.length}
         </span>
         <button
+          className="btn btn-primary btn-sm"
+          onClick={() => setShowAddModal(true)}
+          style={{ marginLeft: 8, whiteSpace: 'nowrap' }}
+        >
+          <Plus size={14} />
+          Add Employee
+        </button>
+        <button
           className="btn btn-ghost btn-sm"
           onClick={handleDeleteAll}
           disabled={deleting || employees.length === 0}
-          style={{ color: 'var(--accent-danger)', marginLeft: 8, whiteSpace: 'nowrap' }}
+          style={{ color: 'var(--accent-danger)', marginLeft: 4, whiteSpace: 'nowrap' }}
           title="Delete all employees from SharePoint"
         >
           <Trash2 size={14} />
           {deleting && deleteProgress
-            ? `Deleting ${deleteProgress.current}/${deleteProgress.total}...`
+            ? `${deleteProgress.current}/${deleteProgress.total}`
             : 'Delete All'}
         </button>
       </div>
@@ -194,6 +264,94 @@ export default function EmployeeList() {
           <p>No employees match "{searchQuery}"</p>
         </div>
       )}
+
+      {/* Add Employee Modal */}
+      <AddEmployeeModal
+        show={showAddModal}
+        form={addForm}
+        adding={adding}
+        onChange={handleFormChange}
+        onSave={handleAddEmployee}
+        onClose={() => { setShowAddModal(false); setAddForm(EMPTY_FORM) }}
+      />
     </div>
+  )
+}
+
+function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
+  if (!show) return null
+
+  const fields = [
+    { key: 'firstName', label: 'First Name', required: true },
+    { key: 'lastName', label: 'Last Name', required: true },
+    { key: 'department', label: 'Department' },
+    { key: 'jobTitle', label: 'Job Title' },
+    { key: 'badgeNumber', label: 'Badge Number' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+  ]
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="modal-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div
+          className="modal-content"
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          onClick={(e) => e.stopPropagation()}
+          style={{ maxWidth: 480 }}
+        >
+          <div className="modal-header">
+            <h3>Add Employee</h3>
+            <button className="modal-close" onClick={onClose}>
+              <X size={18} />
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="add-form">
+              {fields.map(({ key, label, required }) => (
+                <div key={key} className="form-field">
+                  <label className="form-label">
+                    {label}
+                    {required && <span style={{ color: 'var(--accent-danger)' }}> *</span>}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={form[key]}
+                    onChange={(e) => onChange(key, e.target.value)}
+                    placeholder={`Enter ${label.toLowerCase()}`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-ghost" onClick={onClose}>
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={onSave}
+              disabled={adding}
+            >
+              {adding ? 'Adding...' : (
+                <>
+                  <Check size={16} />
+                  Add Employee
+                </>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   )
 }
