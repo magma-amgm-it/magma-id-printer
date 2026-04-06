@@ -87,7 +87,7 @@ export default function ImportData() {
     setSaving(true)
     setSaveProgress({ current: 0, total: previewData.length })
     try {
-      const { successCount, failCount } = await bulkCreateEmployees(previewData, (current, total) => {
+      const { successCount, skippedCount, failCount } = await bulkCreateEmployees(previewData, (current, total) => {
         setSaveProgress({ current, total })
       })
       localStorage.setItem('magma_last_import', JSON.stringify({
@@ -97,7 +97,10 @@ export default function ImportData() {
       if (failCount > 0) {
         toast.error(`${failCount} employees failed to import. Check console for details.`)
       }
-      toast.success(`Successfully imported ${successCount} of ${previewData.length} employees!`)
+      if (skippedCount > 0) {
+        toast(`${skippedCount} employees skipped (already exist by email)`, { icon: 'ℹ️' })
+      }
+      toast.success(`Imported ${successCount} new employees${skippedCount > 0 ? `, ${skippedCount} already existed` : ''}!`)
       navigate('/employees')
     } catch (err) {
       toast.error(`Save failed: ${err.message}`)

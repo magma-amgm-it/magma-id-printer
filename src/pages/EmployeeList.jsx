@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, User, Camera, Printer, Upload, UserCircle, Trash2, Plus, X, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getAllEmployees, getAllPhotoNames, deleteAllEmployees, createEmployee } from '../services/graphApi'
+import { getAllEmployees, getAllPhotoNames, deleteAllEmployees, deleteEmployee, createEmployee } from '../services/graphApi'
+import { getActiveAccount } from '../services/auth'
 import './EmployeeList.css'
+
+const ADMIN_EMAIL = 'abhishek.desai@magma-amgm.org'
 
 const EMPTY_FORM = {
   firstName: '',
@@ -24,11 +27,14 @@ export default function EmployeeList() {
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [deleteProgress, setDeleteProgress] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   // Add employee modal
   const [showAddModal, setShowAddModal] = useState(false)
   const [addForm, setAddForm] = useState(EMPTY_FORM)
   const [adding, setAdding] = useState(false)
+
+  const isAdmin = getActiveAccount()?.username?.toLowerCase() === ADMIN_EMAIL
 
   useEffect(() => {
     loadData()
@@ -48,6 +54,23 @@ export default function EmployeeList() {
       console.error('Failed to load employees:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleDeleteOne(emp, e) {
+    e.stopPropagation()
+    if (!window.confirm(`Delete ${emp.fullName || emp.firstName}? This will remove them from SharePoint.`)) {
+      return
+    }
+    setDeletingId(emp.id)
+    try {
+      await deleteEmployee(emp.id)
+      setEmployees((prev) => prev.filter((e) => e.id !== emp.id))
+      toast.success(`Deleted ${emp.fullName || emp.firstName}`)
+    } catch (err) {
+      toast.error(`Delete failed: ${err.message}`)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -84,7 +107,6 @@ export default function EmployeeList() {
 
     setAdding(true)
     try {
-      // Generate employee ID
       const nextNum = employees.length + 1
       const employeeId = `EMP-${String(nextNum).padStart(4, '0')}`
 
@@ -96,7 +118,7 @@ export default function EmployeeList() {
       toast.success(`Added ${addForm.firstName} ${addForm.lastName}!`)
       setShowAddModal(false)
       setAddForm(EMPTY_FORM)
-      loadData() // Refresh the list
+      loadData()
     } catch (err) {
       toast.error(`Failed to add employee: ${err.message}`)
     } finally {
@@ -140,7 +162,6 @@ export default function EmployeeList() {
           </div>
         </div>
 
-        {/* Add Modal (also available from empty state) */}
         <AddEmployeeModal
           show={showAddModal}
           form={addForm}
@@ -177,18 +198,20 @@ export default function EmployeeList() {
           <Plus size={14} />
           Add Employee
         </button>
-        <button
-          className="btn btn-ghost btn-sm"
-          onClick={handleDeleteAll}
-          disabled={deleting || employees.length === 0}
-          style={{ color: 'var(--accent-danger)', marginLeft: 4, whiteSpace: 'nowrap' }}
-          title="Delete all employees from SharePoint"
-        >
-          <Trash2 size={14} />
-          {deleting && deleteProgress
-            ? `${deleteProgress.current}/${deleteProgress.total}`
-            : 'Delete All'}
-        </button>
+        {isAdmin && (
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={handleDeleteAll}
+            disabled={deleting || employees.length === 0}
+            style={{ color: 'var(--accent-danger)', marginLeft: 4, whiteSpace: 'nowrap' }}
+            title="Delete all employees from SharePoint (admin only)"
+          >
+            <Trash2 size={14} />
+            {deleting && deleteProgress
+              ? `${deleteProgress.current}/${deleteProgress.total}`
+              : 'Delete All'}
+          </button>
+        )}
       </div>
 
       {/* Employee Table */}
@@ -206,7 +229,7 @@ export default function EmployeeList() {
               <th>Department</th>
               <th>Job Title</th>
               <th>Badge #</th>
-              <th style={{ width: '100px' }}>Action</th>
+              <th style={{ width: '140px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -240,16 +263,26 @@ export default function EmployeeList() {
                   <td className="cell-secondary">{emp.jobTitle}</td>
                   <td className="cell-mono">{emp.badgeNumber}</td>
                   <td>
-                    <button
-                      className="print-row-btn"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        navigate(`/print/${emp.employeeId}`)
-                      }}
-                    >
-                      <Printer size={14} />
-                      Print
-                    </button>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <button
+                        className="print-row-btn"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          navigate(`/print/${emp.employeeId}`)
+                        }}
+                      >
+                        <Printer size={14} />
+                        Print
+                      </button>
+                      <button
+                        className="delete-row-btn"
+                        onClick={(e) => handleDeleteOne(emp, e)}
+                        disabled={deletingId === emp.id}
+                        title="Delete this employee"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </motion.tr>
               )
@@ -265,7 +298,6 @@ export default function EmployeeList() {
         </div>
       )}
 
-      {/* Add Employee Modal */}
       <AddEmployeeModal
         show={showAddModal}
         form={addForm}

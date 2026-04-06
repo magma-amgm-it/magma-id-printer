@@ -169,6 +169,30 @@
   border-color: var(--accent-primary);
 }
 
+.delete-row-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.delete-row-btn:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--accent-danger);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.delete-row-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
 /* Empty state */
 .empty-list {
   display: flex;

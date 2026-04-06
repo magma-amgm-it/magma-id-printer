@@ -196,17 +196,37 @@ export async function updateEmployee(itemId, data) {
 }
 
 export async function bulkCreateEmployees(employees, onProgress) {
+  // Fetch existing employees to detect duplicates by email
+  const existing = await getAllEmployees();
+  const existingEmails = new Set(
+    existing.map((e) => e.email?.toLowerCase()).filter(Boolean)
+  );
+
   const results = [];
   let successCount = 0;
+  let skippedCount = 0;
   let firstError = null;
 
   for (let i = 0; i < employees.length; i++) {
+    const emp = employees[i];
+    const email = emp.email?.toLowerCase();
+
+    // Skip duplicates (matching email)
+    if (email && existingEmails.has(email)) {
+      skippedCount++;
+      results.push({ skipped: true, email });
+      if (onProgress) onProgress(i + 1, employees.length);
+      continue;
+    }
+
     try {
-      const result = await createEmployee(employees[i]);
+      const result = await createEmployee(emp);
       results.push(result);
       successCount++;
+      // Add to set so subsequent duplicates in the same file are caught
+      if (email) existingEmails.add(email);
     } catch (err) {
-      console.error(`Failed to create employee ${i + 1} (${employees[i].firstName} ${employees[i].lastName}):`, err.message);
+      console.error(`Failed to create employee ${i + 1} (${emp.firstName} ${emp.lastName}):`, err.message);
       if (!firstError) firstError = err.message;
       results.push({ error: err.message });
     }
@@ -225,7 +245,7 @@ export async function bulkCreateEmployees(employees, onProgress) {
     console.warn(`Import completed with errors: ${successCount}/${employees.length} succeeded`);
   }
 
-  return { results, successCount, failCount: employees.length - successCount };
+  return { results, successCount, skippedCount, failCount: employees.length - successCount - skippedCount };
 }
 
 export async function deleteEmployee(itemId) {
