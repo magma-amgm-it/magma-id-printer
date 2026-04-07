@@ -356,48 +356,52 @@
 }
 
 /* ═══════════════════════════════════════════════
-   TEMPLATE: Branded (Language School Card Style - Horizontal)
-   Layout: [logo+photo | fields | navy bar] + color stripe bottom
+   TEMPLATE: Branded (MAGMA Staff ID Card)
+   Layout: [NAVY HEADER full width with logo]
+           [PHOTO left | TITLE + FIELDS right]
+           [COLORFUL FOOTER stripe]
    ═══════════════════════════════════════════════ */
 .badge-card.template-branded {
-  background: #f0ede8;
-  display: grid;
-  grid-template-columns: 1fr 13mm;
-  grid-template-rows: 1fr 2.5mm;
+  background: #f5f3ef;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Main area: logo, photo, fields */
-.template-branded .branded-main {
-  grid-column: 1;
-  grid-row: 1;
-  display: grid;
-  grid-template-columns: 26mm 1fr;
-  grid-template-rows: auto 1fr;
-  padding: 2.5mm 3mm;
-  gap: 1mm;
+/* ── Navy header bar (full width, logo left) ── */
+.template-branded .branded-header {
+  background: #2c3053;
+  padding: 2mm 4mm;
+  display: flex;
+  align-items: center;
+  min-height: 10mm;
+  flex-shrink: 0;
 }
 
-.template-branded .branded-main .branded-logo-area {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.template-branded .branded-main .branded-main-logo {
+.template-branded .branded-header-logo {
   height: 7mm;
   width: auto;
   object-fit: contain;
 }
 
-.template-branded .branded-main .badge-photo {
-  grid-column: 1;
-  grid-row: 2;
+/* ── Middle area: photo left, title + fields right ── */
+.template-branded .branded-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  padding: 3mm 4mm;
+  gap: 3mm;
+}
+
+/* Photo */
+.template-branded .badge-photo {
   width: 22mm;
-  height: 28mm;
+  height: 30mm;
   border-radius: 0.5mm;
   overflow: hidden;
   background: #d9d5ce;
   border: 0.3mm solid #c5c0b8;
-  align-self: start;
+  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .template-branded .badge-photo img {
@@ -408,89 +412,84 @@
 
 .template-branded .badge-photo-placeholder {
   color: #b0a99e;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.template-branded .branded-main .badge-fields {
-  grid-column: 2;
-  grid-row: 1 / -1;
+/* Right side: title + fields */
+.template-branded .branded-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1.2mm;
-  padding-left: 2mm;
+  gap: 1.5mm;
+}
+
+/* "STAFF ID CARD" heading */
+.template-branded .branded-title {
+  font-size: 4mm;
+  font-weight: 800;
+  color: #d4a843;
+  text-transform: uppercase;
+  letter-spacing: 0.3mm;
+  line-height: 1.1;
+  margin-bottom: 0.5mm;
+}
+
+/* Fields */
+.template-branded .badge-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
 }
 
 .template-branded .badge-field {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1mm;
 }
 
 .template-branded .badge-field-label {
-  font-size: 1.8mm;
+  font-size: 2mm;
   font-weight: 600;
   color: #7a756c;
-  letter-spacing: 0.15mm;
+  white-space: nowrap;
 }
 
 .template-branded .badge-field-value {
-  font-size: 3mm;
+  font-size: 2.8mm;
   font-weight: 700;
   color: #1a1a2e;
   border-bottom: 0.2mm dotted #b0a99e;
-  padding-bottom: 0.8mm;
-  min-height: 3.5mm;
-}
-
-/* Navy bar (right side) with title + logo */
-.template-branded .branded-navy {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  background: #2c3053;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3mm 1mm;
-  gap: 2mm;
-}
-
-.template-branded .branded-title {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  font-size: 2.8mm;
-  font-weight: 800;
-  color: #d4a843;
-  text-transform: uppercase;
-  letter-spacing: 0.4mm;
-  line-height: 1.1;
-}
-
-.template-branded .branded-logo {
-  height: 8mm;
-  width: auto;
-  object-fit: contain;
-}
-
-/* Colorful stripe across the bottom */
-.template-branded .branded-stripe {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  display: flex;
-  flex-direction: row;
-}
-
-.template-branded .branded-stripe .stripe-segment {
+  padding-bottom: 0.3mm;
   flex: 1;
 }
 
-.template-branded .stripe-cyan { background: #4dd0e1; }
-.template-branded .stripe-pink { background: #f06292; }
-.template-branded .stripe-orange { background: #ffa726; }
-.template-branded .stripe-yellow { background: #d4a843; }
-.template-branded .stripe-teal { background: #26a69a; }
+/* ── Colorful footer stripe ── */
+.template-branded .branded-footer {
+  height: 2.5mm;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+.template-branded .branded-footer .stripe-segment {
+  height: 100%;
+}
+
+.template-branded .stripe-cyan    { background: #4dd0e1; flex: 2; }
+.template-branded .stripe-pink    { background: #f06292; flex: 1.5; }
+.template-branded .stripe-green   { background: #8bc34a; flex: 2; }
+.template-branded .stripe-yellow  { background: #d4a843; flex: 1.5; }
+.template-branded .stripe-blue    { background: #2c3053; flex: 2; }
 
 /* Hide unused generic elements */
+.template-branded .branded-main { display: none; }
+.template-branded .branded-navy { display: none; }
+.template-branded .branded-stripe { display: none; }
 .template-branded .badge-header-bar { display: none; }
 .template-branded .badge-body-area { display: none; }
 .template-branded .badge-left { display: none; }

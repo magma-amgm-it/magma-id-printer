@@ -483,27 +483,26 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     </div>
   )
 
-  // Branded: [logo+photo | fields] [navy bar] + color stripe bottom
+  // Branded: [NAVY HEADER with logo] [photo left | title+fields right] [COLORFUL FOOTER]
   if (template === 'branded') {
     return (
       <div className="badge-card template-branded">
-        <div className="branded-main">
-          <div className="branded-logo-area">
-            <img src={logoSrc} alt="MAGMA" className="branded-main-logo" />
-          </div>
+        <div className="branded-header">
+          <img src={logoSrc} alt="MAGMA" className="branded-header-logo" />
+        </div>
+        <div className="branded-body">
           {photoEl}
-          {fieldsEl}
+          <div className="branded-info">
+            <div className="branded-title">Staff ID Card</div>
+            {fieldsEl}
+          </div>
         </div>
-        <div className="branded-navy">
-          <span className="branded-title">Staff ID Card</span>
-          <img src={logoSrc} alt="MAGMA" className="branded-logo" />
-        </div>
-        <div className="branded-stripe">
+        <div className="branded-footer">
           <div className="stripe-segment stripe-cyan" />
           <div className="stripe-segment stripe-pink" />
-          <div className="stripe-segment stripe-orange" />
+          <div className="stripe-segment stripe-green" />
           <div className="stripe-segment stripe-yellow" />
-          <div className="stripe-segment stripe-teal" />
+          <div className="stripe-segment stripe-blue" />
         </div>
       </div>
     )
