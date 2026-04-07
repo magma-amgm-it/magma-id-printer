@@ -733,6 +733,148 @@
 .template-premium .badge-right { display: none; }
 .template-premium .badge-bottom-bar { display: none; }
 
+/* ═══════════════════════════════════════════════
+   TEMPLATE: Marketing
+   Vertical portrait card with building background,
+   circular photo, centered text, purple footer
+   ═══════════════════════════════════════════════ */
+.badge-card.template-marketing {
+  width: 53.98mm;
+  height: 85.6mm;
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Full background image */
+.template-marketing .marketing-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 3.18mm;
+}
+
+.template-marketing .marketing-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  filter: blur(0.3mm);
+}
+
+/* Dark overlay for readability */
+.template-marketing .marketing-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(20, 20, 40, 0.5) 0%,
+    rgba(20, 20, 40, 0.3) 30%,
+    rgba(20, 20, 40, 0.5) 70%,
+    rgba(20, 20, 40, 0.8) 100%
+  );
+}
+
+/* Content sits above background */
+.template-marketing .marketing-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3mm 3mm 0;
+}
+
+/* Logo at top center */
+.template-marketing .marketing-logo {
+  height: 8mm;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 3mm;
+}
+
+/* Circular photo */
+.template-marketing .marketing-photo {
+  width: 26mm;
+  height: 26mm;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 0.6mm solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1mm 4mm rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  margin-bottom: 3mm;
+}
+
+.template-marketing .marketing-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template-marketing .marketing-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Name */
+.template-marketing .marketing-name {
+  font-size: 4mm;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 1mm;
+}
+
+/* Staff type / role */
+.template-marketing .marketing-role {
+  font-size: 2.5mm;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Purple footer bar */
+.template-marketing .marketing-footer {
+  position: relative;
+  z-index: 1;
+  background: #484471;
+  padding: 2mm 3mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 7mm;
+  border-radius: 0 0 3.18mm 3.18mm;
+}
+
+.template-marketing .marketing-footer-text {
+  font-size: 2.8mm;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5mm;
+}
+
+/* Hide unused generic elements */
+.template-marketing .badge-header-bar { display: none; }
+.template-marketing .badge-body-area { display: none; }
+.template-marketing .branded-header { display: none; }
+.template-marketing .branded-body { display: none; }
+.template-marketing .branded-footer { display: none; }
+.template-marketing .badge-left { display: none; }
+.template-marketing .badge-right { display: none; }
+.template-marketing .badge-bottom-bar { display: none; }
+.template-marketing .badge-fields-logo { display: none; }
+
 /* Print button */
 .print-btn {
   display: flex;

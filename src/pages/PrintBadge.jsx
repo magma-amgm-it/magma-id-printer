@@ -353,6 +353,12 @@ export default function PrintBadge() {
               >
                 Clean White
               </button>
+              <button
+                className={`template-btn ${template === 'marketing' ? 'active' : ''}`}
+                onClick={() => setTemplate('marketing')}
+              >
+                Marketing
+              </button>
             </div>
 
             <div className="card-preview-wrapper">
@@ -504,6 +510,34 @@ function BadgeCard({ template, employee, photoDataUrl }) {
           <div className="stripe-segment stripe-green" />
           <div className="stripe-segment stripe-yellow" />
           <div className="stripe-segment stripe-blue" />
+        </div>
+      </div>
+    )
+  }
+
+  // Marketing: vertical portrait with building bg, circular photo, purple footer
+  if (template === 'marketing') {
+    return (
+      <div className="badge-card template-marketing">
+        <div className="marketing-bg">
+          <img src={buildingSrc} alt="" />
+        </div>
+        <div className="marketing-content">
+          <img src={logoSrc} alt="MAGMA" className="marketing-logo" />
+          <div className="marketing-photo">
+            {photoDataUrl ? (
+              <img src={photoDataUrl} alt="" />
+            ) : (
+              <div className="marketing-photo-placeholder">
+                <User size={28} strokeWidth={1} />
+              </div>
+            )}
+          </div>
+          <div className="marketing-name">{fullName}</div>
+          <div className="marketing-role">{staffType}</div>
+        </div>
+        <div className="marketing-footer">
+          <span className="marketing-footer-text">{employeeId}</span>
         </div>
       </div>
     )
