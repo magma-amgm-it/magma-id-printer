@@ -1030,12 +1030,26 @@
   }
 
   .badge-card-print .badge-card,
-  .badge-card {
+  .badge-card,
+  .badge-card * {
     box-shadow: none !important;
-    border: none !important;
     border-radius: 0 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .badge-card {
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* Remove rounded corners on marketing bg */
+  .template-marketing .marketing-bg {
+    border-radius: 0 !important;
+  }
+
+  .template-marketing .marketing-footer {
+    border-radius: 0 !important;
   }
 }
 
