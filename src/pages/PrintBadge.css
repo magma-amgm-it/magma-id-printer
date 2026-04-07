@@ -369,7 +369,7 @@
 
 /* ── Navy header bar (full width, logo left) ── */
 .template-branded .branded-header {
-  background: #484471;
+  background: #2c3053;
   padding: 2mm 4mm;
   display: flex;
   align-items: center;
@@ -484,7 +484,7 @@
 .template-branded .stripe-pink    { background: #f06292; flex: 1.5; }
 .template-branded .stripe-green   { background: #8bc34a; flex: 2; }
 .template-branded .stripe-yellow  { background: #d4a843; flex: 1.5; }
-.template-branded .stripe-blue    { background: #484471; flex: 2; }
+.template-branded .stripe-blue    { background: #2c3053; flex: 2; }
 
 /* Hide unused generic elements */
 .template-branded .branded-main { display: none; }

@@ -489,7 +489,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     return (
       <div className="badge-card template-branded">
         <div className="branded-header">
-          <img src={logoWhiteSrc} alt="MAGMA" className="branded-header-logo" />
+          <img src={logoSrc} alt="MAGMA" className="branded-header-logo" />
         </div>
         <div className="branded-body">
           {photoEl}
