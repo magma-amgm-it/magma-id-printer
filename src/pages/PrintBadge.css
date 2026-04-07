@@ -760,20 +760,20 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.85;
-  filter: blur(0.2mm);
+  opacity: 0.4;
+  filter: blur(0.3mm);
 }
 
-/* Light overlay — much lighter than before */
+/* Light wash overlay — faded building in background */
 .template-marketing .marketing-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(80, 80, 120, 0.15) 0%,
-    rgba(80, 80, 120, 0.08) 30%,
-    rgba(80, 80, 120, 0.1) 70%,
-    rgba(60, 60, 100, 0.35) 100%
+    rgba(220, 220, 235, 0.7) 0%,
+    rgba(220, 220, 235, 0.6) 40%,
+    rgba(210, 210, 230, 0.65) 70%,
+    rgba(72, 68, 113, 0.4) 100%
   );
 }
 
@@ -787,14 +787,15 @@
   align-items: center;
   justify-content: center;
   padding: 0 3mm;
+  margin-top: -2mm;
 }
 
 /* Logo at top center */
 .template-marketing .marketing-logo {
-  height: 8mm;
+  height: 7mm;
   width: auto;
   object-fit: contain;
-  margin-bottom: 3mm;
+  margin-bottom: 2mm;
 }
 
 /* Circular photo */
@@ -829,7 +830,7 @@
 .template-marketing .marketing-name {
   font-size: 4mm;
   font-weight: 700;
-  color: #ffffff;
+  color: #2c3053;
   text-align: center;
   line-height: 1.2;
   margin-bottom: 1mm;
@@ -838,8 +839,8 @@
 /* Staff type / role */
 .template-marketing .marketing-role {
   font-size: 2.5mm;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  color: #484471;
   text-align: center;
   line-height: 1.3;
 }
