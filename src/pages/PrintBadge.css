@@ -1004,18 +1004,38 @@
 }
 
 @media print {
+  /* Hide everything except the print area */
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
   .print-only {
     display: block;
   }
 
   @page {
-    size: 85.6mm 53.98mm;
     margin: 0;
   }
 
-  .badge-card-print .badge-card {
-    box-shadow: none;
-    border: none;
+  .badge-card-print .badge-card,
+  .badge-card {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
 
