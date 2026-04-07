@@ -33,7 +33,7 @@ export default function PrintBadge() {
 
   // Print modal
   const [showPrintModal, setShowPrintModal] = useState(false)
-  const [template, setTemplate] = useState('branded') // 'branded' or 'clean'
+  const [template, setTemplate] = useState('premium') // 'premium', 'branded', or 'clean'
 
   useEffect(() => {
     if (employeeId) {
@@ -336,6 +336,12 @@ export default function PrintBadge() {
             {/* Template Switcher */}
             <div className="template-switcher">
               <button
+                className={`template-btn ${template === 'premium' ? 'active' : ''}`}
+                onClick={() => setTemplate('premium')}
+              >
+                Premium
+              </button>
+              <button
                 className={`template-btn ${template === 'branded' ? 'active' : ''}`}
                 onClick={() => setTemplate('branded')}
               >
@@ -440,12 +446,20 @@ export default function PrintBadge() {
 
 function BadgeCard({ template, employee, photoDataUrl }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
+  const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
   const staffType = employee.department || 'MAGMA Staff'
   const employeeId = employee.badgeNumber || employee.employeeId
   const fullName = `${employee.lastName} ${employee.firstName}`.trim()
 
   return (
     <div className={`badge-card template-${template}`}>
+      {/* Building background (premium only) */}
+      {template === 'premium' && (
+        <div className="badge-bg-image">
+          <img src={buildingSrc} alt="" />
+        </div>
+      )}
+
       {/* Header bar */}
       <div className="badge-header-bar">
         <div className="badge-header-title">
@@ -480,7 +494,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
               <span className="badge-field-label">Name:</span>
               <span className="badge-field-value">{fullName}</span>
             </div>
-            <div className="badge-field">
+            <div className="badge-field staff-type">
               <span className="badge-field-label">Staff Type:</span>
               <span className="badge-field-value">{staffType}</span>
             </div>

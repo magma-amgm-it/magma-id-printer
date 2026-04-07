@@ -574,6 +574,146 @@
 .template-clean .badge-right { display: none; }
 .template-clean .badge-bottom-bar { display: none; }
 
+/* ═══════════════════════════════════════════════
+   TEMPLATE: Premium
+   Building photo background, dark overlay, gold accents
+   ═══════════════════════════════════════════════ */
+.badge-card.template-premium {
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Building photo background with dark overlay */
+.template-premium .badge-bg-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.template-premium .badge-bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.25;
+  filter: blur(0.3mm);
+}
+
+/* Dark gradient overlay on top of building */
+.template-premium .badge-bg-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.7) 0%,
+    rgba(15, 23, 42, 0.4) 30%,
+    rgba(15, 23, 42, 0.6) 60%,
+    rgba(15, 23, 42, 0.9) 100%
+  );
+}
+
+/* Header */
+.template-premium .badge-header-bar {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5mm 3mm 1mm;
+  min-height: 10mm;
+}
+
+.template-premium .badge-header-title {
+  display: none;
+}
+
+.template-premium .badge-logo {
+  height: 9mm;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* Body */
+.template-premium .badge-body-area {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 1;
+}
+
+.template-premium .badge-color-stripe {
+  display: none;
+}
+
+.template-premium .badge-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1mm 4mm 3mm;
+  gap: 1.5mm;
+}
+
+/* Photo with glowing border */
+.template-premium .badge-photo {
+  width: 26mm;
+  height: 30mm;
+  border-radius: 1.5mm;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+  border: 0.5mm solid rgba(212, 168, 67, 0.5);
+  box-shadow: 0 0 4mm rgba(212, 168, 67, 0.2), 0 2mm 6mm rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+
+.template-premium .badge-photo-placeholder {
+  color: rgba(255,255,255,0.15);
+}
+
+/* Fields */
+.template-premium .badge-fields {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8mm;
+  margin-top: 1mm;
+}
+
+.template-premium .badge-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.template-premium .badge-field-label {
+  font-size: 1.6mm;
+  font-weight: 600;
+  color: rgba(212, 168, 67, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.4mm;
+}
+
+.template-premium .badge-field-value {
+  font-size: 2.8mm;
+  font-weight: 700;
+  color: #ffffff;
+  border-bottom: 0.2mm solid rgba(255,255,255,0.12);
+  padding-bottom: 0.5mm;
+  min-height: 3.5mm;
+}
+
+/* Staff type gets gold highlight */
+.template-premium .badge-field.staff-type .badge-field-value {
+  color: #d4a843;
+}
+
+.template-premium .badge-left { display: none; }
+.template-premium .badge-right { display: none; }
+.template-premium .badge-bottom-bar { display: none; }
+
 /* Print button */
 .print-btn {
   display: flex;
