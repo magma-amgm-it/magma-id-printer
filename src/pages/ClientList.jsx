@@ -10,8 +10,6 @@ const EMPTY_FORM = {
   firstName: '',
   lastName: '',
   program: '',
-  email: '',
-  phone: '',
   startDate: '',
 }
 
@@ -277,9 +275,7 @@ function AddClientModal({ show, form, adding, onChange, onSave, onClose }) {
     { key: 'firstName', label: 'First Name', required: true, type: 'text' },
     { key: 'lastName', label: 'Last Name', required: true, type: 'text' },
     { key: 'program', label: 'Program', type: 'text' },
-    { key: 'email', label: 'Email', type: 'email' },
-    { key: 'phone', label: 'Phone', type: 'tel' },
-    { key: 'startDate', label: 'Start Date', type: 'date' },
+    { key: 'startDate', label: 'Expiry Date', type: 'date' },
   ]
 
   return (

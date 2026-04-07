@@ -31,6 +31,7 @@ export default function PrintClient() {
   const [showSearch, setShowSearch] = useState(!clientId)
 
   const [showPrintModal, setShowPrintModal] = useState(false)
+  const [template, setTemplate] = useState('branded')
 
   useEffect(() => {
     if (clientId) loadClient(clientId)
@@ -287,7 +288,7 @@ export default function PrintClient() {
                 <span className="info-value">{client.fullName}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">ID</span>
+                <span className="info-label">Client ID</span>
                 <span className="info-value mono">{client.clientId}</span>
               </div>
               {client.program && (
@@ -296,15 +297,9 @@ export default function PrintClient() {
                   <span className="info-value">{client.program}</span>
                 </div>
               )}
-              {client.email && (
-                <div className="info-row">
-                  <span className="info-label">Email</span>
-                  <span className="info-value">{client.email}</span>
-                </div>
-              )}
               {client.startDate && (
                 <div className="info-row">
-                  <span className="info-label">Start Date</span>
+                  <span className="info-label">Expiry Date</span>
                   <span className="info-value">{new Date(client.startDate).toLocaleDateString()}</span>
                 </div>
               )}
@@ -317,38 +312,40 @@ export default function PrintClient() {
               <h3>ID Card Preview</h3>
             </div>
 
+            {/* Template Switcher */}
+            <div className="template-switcher">
+              <button
+                className={`template-btn ${template === 'premium' ? 'active' : ''}`}
+                onClick={() => setTemplate('premium')}
+              >
+                Premium
+              </button>
+              <button
+                className={`template-btn ${template === 'branded' ? 'active' : ''}`}
+                onClick={() => setTemplate('branded')}
+              >
+                Branded
+              </button>
+              <button
+                className={`template-btn ${template === 'clean' ? 'active' : ''}`}
+                onClick={() => setTemplate('clean')}
+              >
+                Clean White
+              </button>
+              <button
+                className={`template-btn ${template === 'marketing' ? 'active' : ''}`}
+                onClick={() => setTemplate('marketing')}
+              >
+                Marketing
+              </button>
+            </div>
+
             <div className="card-preview-wrapper">
-              <div className="badge-card">
-                <div className="badge-header">
-                  <img src={import.meta.env.BASE_URL + 'logo.jpg'} alt="Company" className="badge-logo" />
-                </div>
-                <div className="badge-body">
-                  <div className="badge-photo">
-                    {photoDataUrl ? (
-                      <img src={photoDataUrl} alt="" />
-                    ) : (
-                      <div className="badge-photo-placeholder">
-                        <User size={32} strokeWidth={1} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="badge-info">
-                    <div className="badge-name">
-                      {client.firstName} {client.lastName}
-                    </div>
-                    {client.program && (
-                      <div className="badge-title">{client.program}</div>
-                    )}
-                    <div className="badge-dept">Language School</div>
-                  </div>
-                </div>
-                <div className="badge-footer">
-                  <span className="badge-number">{client.clientId}</span>
-                  {client.startDate && (
-                    <span className="badge-id">{new Date(client.startDate).toLocaleDateString()}</span>
-                  )}
-                </div>
-              </div>
+              <ClientCard
+                template={template}
+                client={client}
+                photoDataUrl={photoDataUrl}
+              />
             </div>
 
             <button
@@ -365,36 +362,12 @@ export default function PrintClient() {
       {/* Hidden print area */}
       <div id="print-area" className="print-only">
         {client && (
-          <div className="badge-card badge-card-print">
-            <div className="badge-header">
-              <img src={import.meta.env.BASE_URL + 'logo.jpg'} alt="Company" className="badge-logo" />
-            </div>
-            <div className="badge-body">
-              <div className="badge-photo">
-                {photoDataUrl ? (
-                  <img src={photoDataUrl} alt="" />
-                ) : (
-                  <div className="badge-photo-placeholder">
-                    <User size={32} strokeWidth={1} />
-                  </div>
-                )}
-              </div>
-              <div className="badge-info">
-                <div className="badge-name">
-                  {client.firstName} {client.lastName}
-                </div>
-                {client.program && (
-                  <div className="badge-title">{client.program}</div>
-                )}
-                <div className="badge-dept">Language School</div>
-              </div>
-            </div>
-            <div className="badge-footer">
-              <span className="badge-number">{client.clientId}</span>
-              {client.startDate && (
-                <span className="badge-id">{new Date(client.startDate).toLocaleDateString()}</span>
-              )}
-            </div>
+          <div className="badge-card-print">
+            <ClientCard
+              template={template}
+              client={client}
+              photoDataUrl={photoDataUrl}
+            />
           </div>
         )}
       </div>
@@ -424,12 +397,15 @@ export default function PrintClient() {
               </div>
               <div className="modal-body">
                 <div className="print-instructions">
-                  <h4>Before printing, make sure:</h4>
+                  <h4>Print settings:</h4>
                   <ul>
-                    <li><Check size={14} /> Select <strong>Evolis Primacy 2</strong> as the printer</li>
-                    <li><Check size={14} /> Set margins to <strong>None</strong></li>
-                    <li><Check size={14} /> Scale should be <strong>100%</strong> (not "Fit to page")</li>
-                    <li><Check size={14} /> Turn off headers and footers</li>
+                    <li><Check size={14} /> Printer: <strong>Evolis Primacy 2</strong></li>
+                    <li><Check size={14} /> Click <strong>"More settings"</strong> to expand options</li>
+                    <li><Check size={14} /> Paper size: <strong>CR80</strong></li>
+                    <li><Check size={14} /> Scale: <strong>150%</strong></li>
+                    <li><Check size={14} /> Margins: <strong>None</strong></li>
+                    <li><Check size={14} /> Check <strong>"Background graphics"</strong></li>
+                    <li><Check size={14} /> Pages per sheet: <strong>1</strong></li>
                   </ul>
                 </div>
                 {!photoDataUrl && (
@@ -452,6 +428,120 @@ export default function PrintClient() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+function ClientCard({ template, client, photoDataUrl }) {
+  const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
+  const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
+  const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
+  const fullName = `${client.lastName} ${client.firstName}`.trim()
+  const program = client.program || ''
+  const expiryDate = client.startDate
+    ? new Date(client.startDate).toLocaleDateString()
+    : ''
+  const clientIdValue = client.clientId
+
+  const photoEl = (
+    <div className="badge-photo">
+      {photoDataUrl ? (
+        <img src={photoDataUrl} alt="" />
+      ) : (
+        <div className="badge-photo-placeholder">
+          <User size={28} strokeWidth={1} />
+        </div>
+      )}
+    </div>
+  )
+
+  const fieldsEl = (
+    <div className="badge-fields">
+      {template !== 'branded' && (
+        <img src={logoSrc} alt="MAGMA" className="badge-fields-logo" />
+      )}
+      <div className="badge-field">
+        <span className="badge-field-label">Name:</span>
+        <span className="badge-field-value">{fullName}</span>
+      </div>
+      <div className="badge-field staff-type">
+        <span className="badge-field-label">Program/Class:</span>
+        <span className="badge-field-value">{program}</span>
+      </div>
+      <div className="badge-field">
+        <span className="badge-field-label">Expiry Date:</span>
+        <span className="badge-field-value">{expiryDate}</span>
+      </div>
+    </div>
+  )
+
+  // Branded: [NAVY HEADER with logo] [photo left | title+fields right] [COLORFUL FOOTER]
+  if (template === 'branded') {
+    return (
+      <div className="badge-card template-branded">
+        <div className="branded-header">
+          <img src={logoWhiteSrc} alt="MAGMA" className="branded-header-logo" />
+        </div>
+        <div className="branded-body">
+          {photoEl}
+          <div className="branded-info">
+            <div className="branded-title">Client ID Card</div>
+            {fieldsEl}
+          </div>
+        </div>
+        <div className="branded-footer">
+          <div className="stripe-segment stripe-cyan" />
+          <div className="stripe-segment stripe-pink" />
+          <div className="stripe-segment stripe-green" />
+          <div className="stripe-segment stripe-yellow" />
+          <div className="stripe-segment stripe-blue" />
+        </div>
+      </div>
+    )
+  }
+
+  // Marketing: vertical portrait with building bg, circular photo, purple footer
+  if (template === 'marketing') {
+    return (
+      <div className="badge-card template-marketing">
+        <div className="marketing-bg">
+          <img src={buildingSrc} alt="" />
+        </div>
+        <div className="marketing-content">
+          <img src={logoSrc} alt="MAGMA" className="marketing-logo" />
+          <div className="marketing-photo">
+            {photoDataUrl ? (
+              <img src={photoDataUrl} alt="" />
+            ) : (
+              <div className="marketing-photo-placeholder">
+                <User size={28} strokeWidth={1} />
+              </div>
+            )}
+          </div>
+          <div className="marketing-name">{fullName}</div>
+          <div className="marketing-role">{program}</div>
+        </div>
+        <div className="marketing-footer">
+          <span className="marketing-footer-text">{clientIdValue}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Premium & Clean: [photo] [fields with logo] (+ building bg for premium)
+  return (
+    <div className={`badge-card template-${template}`}>
+      {template === 'premium' && (
+        <div className="badge-bg-image">
+          <img src={buildingSrc} alt="" />
+        </div>
+      )}
+      <div className="badge-body-area">
+        <div className="badge-content">
+          {photoEl}
+          {fieldsEl}
+        </div>
+      </div>
     </div>
   )
 }
