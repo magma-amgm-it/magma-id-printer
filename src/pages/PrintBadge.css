@@ -585,11 +585,11 @@
 }
 
 .template-clean .badge-fields-logo {
-  height: 7mm;
+  height: 8mm;
   width: auto;
   object-fit: contain;
-  align-self: flex-start;
-  margin-bottom: 1mm;
+  align-self: center;
+  margin-bottom: 1.5mm;
 }
 
 .template-clean .badge-left { display: none; }
