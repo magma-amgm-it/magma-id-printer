@@ -327,12 +327,11 @@
 }
 
 /* ═══════════════════════════════════════════════
-   Badge Card — CR-80 VERTICAL: 53.98mm × 85.6mm
-   (Same card, portrait orientation)
+   Badge Card — CR-80 HORIZONTAL: 85.6mm × 53.98mm
    ═══════════════════════════════════════════════ */
 .badge-card {
-  width: 53.98mm;
-  height: 85.6mm;
+  width: 85.6mm;
+  height: 53.98mm;
   border-radius: 3.18mm;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1);
@@ -363,7 +362,7 @@
 .badge-card.template-branded {
   background: #f5f5f5;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 /* Navy header bar with logo */
@@ -371,22 +370,26 @@
   background: #2c3053;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 2mm 3mm;
-  min-height: 10mm;
+  justify-content: center;
+  padding: 3mm 2mm;
+  width: 14mm;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 2mm;
 }
 
 .template-branded .badge-header-title {
-  font-size: 3mm;
+  font-size: 2.2mm;
   font-weight: 700;
   color: #d4a843;
   text-transform: uppercase;
-  letter-spacing: 0.3mm;
-  line-height: 1.2;
+  letter-spacing: 0.2mm;
+  line-height: 1.3;
+  text-align: center;
 }
 
 .template-branded .badge-logo {
-  height: 8mm;
+  height: 10mm;
   width: auto;
   object-fit: contain;
 }
@@ -417,20 +420,20 @@
 .template-branded .stripe-yellow { background: #d4a843; }
 .template-branded .stripe-teal { background: #26a69a; }
 
-/* Content area */
+/* Content area — horizontal */
 .template-branded .badge-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3mm 3mm 2mm;
-  gap: 1.5mm;
+  flex-direction: row;
+  padding: 3mm;
+  gap: 3mm;
 }
 
 /* Photo */
 .template-branded .badge-photo {
-  width: 28mm;
-  height: 32mm;
+  width: 22mm;
+  height: 30mm;
+  align-self: center;
   border-radius: 1mm;
   overflow: hidden;
   background: #e0e0e0;
@@ -444,11 +447,11 @@
 
 /* Fields */
 .template-branded .badge-fields {
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1mm;
-  margin-top: 1mm;
 }
 
 .template-branded .badge-field {
@@ -485,16 +488,11 @@
 .badge-card.template-clean {
   background: #ffffff;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .template-clean .badge-header-bar {
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3mm 3mm 1mm;
-  min-height: 10mm;
+  display: none;
 }
 
 .template-clean .badge-header-title {
@@ -520,15 +518,15 @@
 .template-clean .badge-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2mm 4mm;
-  gap: 1.5mm;
+  flex-direction: row;
+  padding: 4mm;
+  gap: 3mm;
 }
 
 .template-clean .badge-photo {
-  width: 28mm;
-  height: 32mm;
+  width: 22mm;
+  height: 30mm;
+  align-self: center;
   border-radius: 1mm;
   overflow: hidden;
   background: #f8f9fa;
@@ -541,11 +539,11 @@
 }
 
 .template-clean .badge-fields {
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1mm;
-  margin-top: 1mm;
 }
 
 .template-clean .badge-field {
@@ -570,6 +568,14 @@
   min-height: 3.5mm;
 }
 
+.template-clean .badge-fields-logo {
+  height: 7mm;
+  width: auto;
+  object-fit: contain;
+  align-self: flex-start;
+  margin-bottom: 1mm;
+}
+
 .template-clean .badge-left { display: none; }
 .template-clean .badge-right { display: none; }
 .template-clean .badge-bottom-bar { display: none; }
@@ -581,7 +587,7 @@
 .badge-card.template-premium {
   background: #0f172a;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
 }
 
@@ -613,30 +619,12 @@
   );
 }
 
-/* Header */
+/* Header - hidden for horizontal premium */
 .template-premium .badge-header-bar {
-  position: relative;
-  z-index: 1;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2.5mm 3mm 1mm;
-  min-height: 10mm;
-}
-
-.template-premium .badge-header-title {
   display: none;
 }
 
-.template-premium .badge-logo {
-  height: 9mm;
-  width: auto;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-
-/* Body */
+/* Body - full card horizontal */
 .template-premium .badge-body-area {
   flex: 1;
   display: flex;
@@ -652,35 +640,40 @@
 .template-premium .badge-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1mm 4mm 3mm;
-  gap: 1.5mm;
+  flex-direction: row;
+  padding: 4mm;
+  gap: 4mm;
 }
 
-/* Photo with glowing border */
+/* Photo with glowing border — left side */
 .template-premium .badge-photo {
-  width: 26mm;
-  height: 30mm;
+  width: 24mm;
+  height: 32mm;
   border-radius: 1.5mm;
   overflow: hidden;
   background: rgba(255,255,255,0.05);
   border: 0.5mm solid rgba(212, 168, 67, 0.5);
   box-shadow: 0 0 4mm rgba(212, 168, 67, 0.2), 0 2mm 6mm rgba(0,0,0,0.4);
   flex-shrink: 0;
+  align-self: center;
 }
 
 .template-premium .badge-photo-placeholder {
   color: rgba(255,255,255,0.15);
 }
 
-/* Fields */
+/* Fields — right side */
 .template-premium .badge-fields {
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.8mm;
-  margin-top: 1mm;
+  justify-content: center;
+  gap: 1.2mm;
+}
+
+/* Logo above fields */
+.template-premium .badge-fields::before {
+  content: '';
 }
 
 .template-premium .badge-field {
@@ -697,12 +690,21 @@
 }
 
 .template-premium .badge-field-value {
-  font-size: 2.8mm;
+  font-size: 3mm;
   font-weight: 700;
   color: #ffffff;
-  border-bottom: 0.2mm solid rgba(255,255,255,0.12);
-  padding-bottom: 0.5mm;
+  border-bottom: 0.2mm solid rgba(255,255,255,0.1);
+  padding-bottom: 0.8mm;
   min-height: 3.5mm;
+}
+
+/* Logo inside fields area */
+.template-premium .badge-fields-logo {
+  height: 8mm;
+  width: auto;
+  object-fit: contain;
+  align-self: flex-start;
+  margin-bottom: 1mm;
 }
 
 /* Staff type gets gold highlight */
@@ -846,7 +848,7 @@
   }
 
   @page {
-    size: 53.98mm 85.6mm;
+    size: 85.6mm 53.98mm;
     margin: 0;
   }
 

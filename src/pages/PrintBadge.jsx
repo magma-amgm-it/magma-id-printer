@@ -490,6 +490,9 @@ function BadgeCard({ template, employee, photoDataUrl }) {
           </div>
 
           <div className="badge-fields">
+            {(template === 'premium' || template === 'clean') && (
+              <img src={logoSrc} alt="MAGMA" className="badge-fields-logo" />
+            )}
             <div className="badge-field">
               <span className="badge-field-label">Name:</span>
               <span className="badge-field-value">{fullName}</span>
