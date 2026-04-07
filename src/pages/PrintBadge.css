@@ -542,7 +542,7 @@
 .template-clean .badge-photo {
   width: 22mm;
   height: 30mm;
-  margin-top: 4mm;
+  align-self: center;
   border-radius: 1mm;
   overflow: hidden;
   background: #f8f9fa;
@@ -558,8 +558,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  gap: 1mm;
+  justify-content: center;
+  gap: 1.2mm;
+  padding-top: 2mm;
 }
 
 .template-clean .badge-field {
@@ -589,7 +590,6 @@
   width: auto;
   object-fit: contain;
   align-self: flex-start;
-  margin-bottom: 1.5mm;
   margin-left: 2mm;
 }
 
