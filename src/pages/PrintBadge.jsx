@@ -33,6 +33,7 @@ export default function PrintBadge() {
 
   // Print modal
   const [showPrintModal, setShowPrintModal] = useState(false)
+  const [template, setTemplate] = useState('branded') // 'branded' or 'clean'
 
   useEffect(() => {
     if (employeeId) {
@@ -316,27 +317,13 @@ export default function PrintBadge() {
                 <span className="info-value">{employee.fullName || `${employee.firstName} ${employee.lastName}`}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">ID</span>
-                <span className="info-value mono">{employee.employeeId}</span>
+                <span className="info-label">Employee ID</span>
+                <span className="info-value mono">{employee.badgeNumber || employee.employeeId}</span>
               </div>
-              {employee.department && (
-                <div className="info-row">
-                  <span className="info-label">Department</span>
-                  <span className="info-value">{employee.department}</span>
-                </div>
-              )}
-              {employee.jobTitle && (
-                <div className="info-row">
-                  <span className="info-label">Title</span>
-                  <span className="info-value">{employee.jobTitle}</span>
-                </div>
-              )}
-              {employee.badgeNumber && (
-                <div className="info-row">
-                  <span className="info-label">Badge #</span>
-                  <span className="info-value mono">{employee.badgeNumber}</span>
-                </div>
-              )}
+              <div className="info-row">
+                <span className="info-label">Staff Type</span>
+                <span className="info-value">{employee.department || 'MAGMA Staff'}</span>
+              </div>
             </div>
           </div>
 
@@ -346,46 +333,30 @@ export default function PrintBadge() {
               <h3>Badge Preview</h3>
             </div>
 
-            {/* Screen preview at ~2x */}
-            <div className="card-preview-wrapper">
-              <div className="badge-card">
-                <div className="badge-header">
-                  <img src="/logo.jpg" alt="Company" className="badge-logo" />
-                </div>
-                <div className="badge-body">
-                  <div className="badge-photo">
-                    {photoDataUrl ? (
-                      <img src={photoDataUrl} alt="" />
-                    ) : (
-                      <div className="badge-photo-placeholder">
-                        <User size={32} strokeWidth={1} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="badge-info">
-                    <div className="badge-name">
-                      {employee.firstName} {employee.lastName}
-                    </div>
-                    {employee.jobTitle && (
-                      <div className="badge-title">{employee.jobTitle}</div>
-                    )}
-                    {employee.department && (
-                      <div className="badge-dept">{employee.department}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="badge-footer">
-                  {employee.badgeNumber && (
-                    <span className="badge-number">{employee.badgeNumber}</span>
-                  )}
-                  {employee.employeeId && (
-                    <span className="badge-id">{employee.employeeId}</span>
-                  )}
-                </div>
-              </div>
+            {/* Template Switcher */}
+            <div className="template-switcher">
+              <button
+                className={`template-btn ${template === 'branded' ? 'active' : ''}`}
+                onClick={() => setTemplate('branded')}
+              >
+                Branded
+              </button>
+              <button
+                className={`template-btn ${template === 'clean' ? 'active' : ''}`}
+                onClick={() => setTemplate('clean')}
+              >
+                Clean White
+              </button>
             </div>
 
-            {/* Print button */}
+            <div className="card-preview-wrapper">
+              <BadgeCard
+                template={template}
+                employee={employee}
+                photoDataUrl={photoDataUrl}
+              />
+            </div>
+
             <button
               className="print-btn"
               onClick={() => setShowPrintModal(true)}
@@ -400,40 +371,12 @@ export default function PrintBadge() {
       {/* Hidden print area */}
       <div id="print-area" className="print-only">
         {employee && (
-          <div className="badge-card badge-card-print">
-            <div className="badge-header">
-              <img src="/logo.jpg" alt="Company" className="badge-logo" />
-            </div>
-            <div className="badge-body">
-              <div className="badge-photo">
-                {photoDataUrl ? (
-                  <img src={photoDataUrl} alt="" />
-                ) : (
-                  <div className="badge-photo-placeholder">
-                    <User size={32} strokeWidth={1} />
-                  </div>
-                )}
-              </div>
-              <div className="badge-info">
-                <div className="badge-name">
-                  {employee.firstName} {employee.lastName}
-                </div>
-                {employee.jobTitle && (
-                  <div className="badge-title">{employee.jobTitle}</div>
-                )}
-                {employee.department && (
-                  <div className="badge-dept">{employee.department}</div>
-                )}
-              </div>
-            </div>
-            <div className="badge-footer">
-              {employee.badgeNumber && (
-                <span className="badge-number">{employee.badgeNumber}</span>
-              )}
-              {employee.employeeId && (
-                <span className="badge-id">{employee.employeeId}</span>
-              )}
-            </div>
+          <div className="badge-card-print">
+            <BadgeCard
+              template={template}
+              employee={employee}
+              photoDataUrl={photoDataUrl}
+            />
           </div>
         )}
       </div>
@@ -491,6 +434,37 @@ export default function PrintBadge() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+function BadgeCard({ template, employee, photoDataUrl }) {
+  const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
+  const staffType = employee.department || 'MAGMA Staff'
+  const employeeId = employee.badgeNumber || employee.employeeId
+
+  return (
+    <div className={`badge-card template-${template}`}>
+      <div className="badge-left">
+        <div className="badge-photo">
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="" />
+          ) : (
+            <div className="badge-photo-placeholder">
+              <User size={28} strokeWidth={1} />
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="badge-right">
+        <img src={logoSrc} alt="MAGMA" className="badge-logo" />
+        <div className="badge-name">
+          {employee.firstName} {employee.lastName}
+        </div>
+        <div className="badge-staff-type">{staffType}</div>
+        <div className="badge-employee-id">{employeeId}</div>
+      </div>
+      <div className="badge-bottom-bar" />
     </div>
   )
 }
