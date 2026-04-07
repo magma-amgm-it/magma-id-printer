@@ -1031,26 +1031,36 @@
   }
 
   .badge-card-print .badge-card,
-  .badge-card,
-  .badge-card * {
+  .badge-card {
     box-shadow: none !important;
+    border: none !important;
     border-radius: 0 !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  .badge-card {
-    border: none !important;
-    overflow: visible !important;
+  /* Ensure backgrounds print */
+  .badge-card * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Remove rounded corners on marketing bg */
-  .template-marketing .marketing-bg {
+  /* Remove rounded corners only on outer card and bg/footer edges */
+  .template-marketing .marketing-bg,
+  .template-marketing .marketing-footer,
+  .template-branded .branded-header,
+  .template-branded .branded-footer {
     border-radius: 0 !important;
   }
 
-  .template-marketing .marketing-footer {
-    border-radius: 0 !important;
+  /* KEEP border-radius on photo circles and inner elements */
+  .marketing-photo {
+    border-radius: 50% !important;
+  }
+
+  .badge-photo {
+    border-radius: 1mm !important;
   }
 }
 
