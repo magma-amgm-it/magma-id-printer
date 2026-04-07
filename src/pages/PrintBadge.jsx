@@ -446,6 +446,7 @@ export default function PrintBadge() {
 
 function BadgeCard({ template, employee, photoDataUrl }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
+  const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.jpg'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
   const staffType = employee.department || 'MAGMA Staff'
   const employeeId = employee.badgeNumber || employee.employeeId
@@ -488,7 +489,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     return (
       <div className="badge-card template-branded">
         <div className="branded-header">
-          <img src={logoSrc} alt="MAGMA" className="branded-header-logo" />
+          <img src={logoWhiteSrc} alt="MAGMA" className="branded-header-logo" />
         </div>
         <div className="branded-body">
           {photoEl}
