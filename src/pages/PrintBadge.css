@@ -356,102 +356,68 @@
 }
 
 /* ═══════════════════════════════════════════════
-   TEMPLATE: Branded (MAGMA Student Card Style)
-   Navy header, colorful left stripe, fields below
+   TEMPLATE: Branded (Language School Card Style - Horizontal)
+   Layout: [logo+photo | fields | navy bar] + color stripe bottom
    ═══════════════════════════════════════════════ */
 .badge-card.template-branded {
-  background: #f5f5f5;
-  display: flex;
-  flex-direction: row;
+  background: #f0ede8;
+  display: grid;
+  grid-template-columns: 1fr 13mm;
+  grid-template-rows: 1fr 2.5mm;
 }
 
-/* Navy header bar with logo */
-.template-branded .badge-header-bar {
-  background: #2c3053;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3mm 2mm;
-  width: 14mm;
-  flex-shrink: 0;
-  flex-direction: column;
-  gap: 2mm;
+/* Main area: logo, photo, fields */
+.template-branded .branded-main {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 26mm 1fr;
+  grid-template-rows: auto 1fr;
+  padding: 2.5mm 3mm;
+  gap: 1mm;
 }
 
-.template-branded .badge-header-title {
-  font-size: 2.2mm;
-  font-weight: 700;
-  color: #d4a843;
-  text-transform: uppercase;
-  letter-spacing: 0.2mm;
-  line-height: 1.3;
-  text-align: center;
+.template-branded .branded-main .branded-logo-area {
+  grid-column: 1;
+  grid-row: 1;
 }
 
-.template-branded .badge-logo {
-  height: 10mm;
+.template-branded .branded-main .branded-main-logo {
+  height: 7mm;
   width: auto;
   object-fit: contain;
 }
 
-/* Body area with colorful left stripe */
-.template-branded .badge-body-area {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  position: relative;
-}
-
-/* Colorful left stripe */
-.template-branded .badge-color-stripe {
-  width: 3mm;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.template-branded .badge-color-stripe .stripe-segment {
-  flex: 1;
-}
-
-.template-branded .stripe-cyan { background: #4dd0e1; }
-.template-branded .stripe-pink { background: #f06292; }
-.template-branded .stripe-orange { background: #ffa726; }
-.template-branded .stripe-yellow { background: #d4a843; }
-.template-branded .stripe-teal { background: #26a69a; }
-
-/* Content area — horizontal */
-.template-branded .badge-content {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  padding: 3mm;
-  gap: 3mm;
-}
-
-/* Photo */
-.template-branded .badge-photo {
+.template-branded .branded-main .badge-photo {
+  grid-column: 1;
+  grid-row: 2;
   width: 22mm;
-  height: 30mm;
-  align-self: center;
-  border-radius: 1mm;
+  height: 28mm;
+  border-radius: 0.5mm;
   overflow: hidden;
-  background: #e0e0e0;
-  border: 0.3mm solid #ccc;
-  flex-shrink: 0;
+  background: #d9d5ce;
+  border: 0.3mm solid #c5c0b8;
+  align-self: start;
+}
+
+.template-branded .badge-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .template-branded .badge-photo-placeholder {
-  color: #bbb;
+  color: #b0a99e;
 }
 
-/* Fields */
-.template-branded .badge-fields {
-  flex: 1;
+.template-branded .branded-main .badge-fields {
+  grid-column: 2;
+  grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1mm;
+  gap: 1.2mm;
+  padding-left: 2mm;
 }
 
 .template-branded .badge-field {
@@ -462,24 +428,75 @@
 .template-branded .badge-field-label {
   font-size: 1.8mm;
   font-weight: 600;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.2mm;
+  color: #7a756c;
+  letter-spacing: 0.15mm;
 }
 
 .template-branded .badge-field-value {
-  font-size: 2.8mm;
+  font-size: 3mm;
   font-weight: 700;
   color: #1a1a2e;
-  border-bottom: 0.2mm solid #ccc;
-  padding-bottom: 0.5mm;
+  border-bottom: 0.2mm dotted #b0a99e;
+  padding-bottom: 0.8mm;
   min-height: 3.5mm;
 }
 
-/* Hide unused elements */
+/* Navy bar (right side) with title + logo */
+.template-branded .branded-navy {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  background: #2c3053;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3mm 1mm;
+  gap: 2mm;
+}
+
+.template-branded .branded-title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-size: 2.8mm;
+  font-weight: 800;
+  color: #d4a843;
+  text-transform: uppercase;
+  letter-spacing: 0.4mm;
+  line-height: 1.1;
+}
+
+.template-branded .branded-logo {
+  height: 8mm;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Colorful stripe across the bottom */
+.template-branded .branded-stripe {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: row;
+}
+
+.template-branded .branded-stripe .stripe-segment {
+  flex: 1;
+}
+
+.template-branded .stripe-cyan { background: #4dd0e1; }
+.template-branded .stripe-pink { background: #f06292; }
+.template-branded .stripe-orange { background: #ffa726; }
+.template-branded .stripe-yellow { background: #d4a843; }
+.template-branded .stripe-teal { background: #26a69a; }
+
+/* Hide unused generic elements */
+.template-branded .badge-header-bar { display: none; }
+.template-branded .badge-body-area { display: none; }
 .template-branded .badge-left { display: none; }
 .template-branded .badge-right { display: none; }
 .template-branded .badge-bottom-bar { display: none; }
+.template-branded .badge-fields-logo { display: none; }
 
 /* ═══════════════════════════════════════════════
    TEMPLATE: Clean White
