@@ -652,8 +652,8 @@
   border-radius: 1.5mm;
   overflow: hidden;
   background: rgba(255,255,255,0.05);
-  border: 0.5mm solid rgba(212, 168, 67, 0.5);
-  box-shadow: 0 0 4mm rgba(212, 168, 67, 0.2), 0 2mm 6mm rgba(0,0,0,0.4);
+  border: 0.5mm solid rgba(77, 208, 225, 0.4);
+  box-shadow: 0 0 4mm rgba(77, 208, 225, 0.15), 0 2mm 6mm rgba(0,0,0,0.4);
   flex-shrink: 0;
   align-self: center;
 }
@@ -684,7 +684,7 @@
 .template-premium .badge-field-label {
   font-size: 1.6mm;
   font-weight: 600;
-  color: rgba(212, 168, 67, 0.8);
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.4mm;
 }
@@ -707,9 +707,9 @@
   margin-bottom: 1mm;
 }
 
-/* Staff type gets gold highlight */
+/* Staff type gets cyan highlight */
 .template-premium .badge-field.staff-type .badge-field-value {
-  color: #d4a843;
+  color: #4dd0e1;
 }
 
 .template-premium .badge-left { display: none; }
