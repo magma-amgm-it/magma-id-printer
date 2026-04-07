@@ -327,21 +327,21 @@
 }
 
 /* ═══════════════════════════════════════════════
-   Badge Card — CR-80: 85.6mm × 53.98mm
+   Badge Card — CR-80 VERTICAL: 53.98mm × 85.6mm
+   (Same card, portrait orientation)
    ═══════════════════════════════════════════════ */
 .badge-card {
-  width: 85.6mm;
-  height: 53.98mm;
+  width: 53.98mm;
+  height: 85.6mm;
   border-radius: 3.18mm;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.1);
   font-family: var(--font-sans);
   position: relative;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* ─── Shared photo & placeholder ─── */
 .badge-photo img {
   width: 100%;
   height: 100%;
@@ -357,208 +357,222 @@
 }
 
 /* ═══════════════════════════════════════════════
-   TEMPLATE: Dark Premium
-   Navy/charcoal with gold accent — VIP feel
+   TEMPLATE: Branded (MAGMA Student Card Style)
+   Navy header, colorful left stripe, fields below
    ═══════════════════════════════════════════════ */
 .badge-card.template-branded {
-  background: linear-gradient(145deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  display: flex;
-  flex-direction: row;
-}
-
-/* Left: accent stripe + photo */
-.template-branded .badge-left {
-  width: 30mm;
+  background: #f5f5f5;
   display: flex;
   flex-direction: column;
+}
+
+/* Navy header bar with logo */
+.template-branded .badge-header-bar {
+  background: #2c3053;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 3mm 2mm;
-  position: relative;
-  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 2mm 3mm;
+  min-height: 10mm;
 }
 
-/* Colorful accent stripe on far left */
-.template-branded .badge-left::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2mm;
-  background: linear-gradient(180deg,
-    #4dd0e1 0%,
-    #26c6da 16%,
-    #f06292 16%,
-    #ec407a 33%,
-    #ffa726 33%,
-    #ff9800 50%,
-    #aed581 50%,
-    #8bc34a 66%,
-    #7e57c2 66%,
-    #673ab7 83%,
-    #26a69a 83%,
-    #009688 100%
-  );
-}
-
-.template-branded .badge-photo {
-  width: 22mm;
-  height: 28mm;
-  border-radius: 1.5mm;
-  overflow: hidden;
-  border: 0.6mm solid rgba(255,255,255,0.15);
-  background: #1e293b;
-  box-shadow: 0 2mm 6mm rgba(0,0,0,0.4);
-}
-
-.template-branded .badge-photo-placeholder {
-  color: rgba(255,255,255,0.2);
-}
-
-/* Right: info */
-.template-branded .badge-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 4mm 5mm 4mm 3mm;
-  gap: 1.2mm;
+.template-branded .badge-header-title {
+  font-size: 3mm;
+  font-weight: 700;
+  color: #d4a843;
+  text-transform: uppercase;
+  letter-spacing: 0.3mm;
+  line-height: 1.2;
 }
 
 .template-branded .badge-logo {
-  height: 7mm;
+  height: 8mm;
   width: auto;
   object-fit: contain;
-  align-self: flex-start;
-  margin-bottom: 2mm;
-  filter: brightness(0) invert(1);
 }
 
-.template-branded .badge-name {
-  font-size: 4.5mm;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.2;
-  word-wrap: break-word;
-  letter-spacing: 0.1mm;
+/* Body area with colorful left stripe */
+.template-branded .badge-body-area {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  position: relative;
 }
 
-.template-branded .badge-staff-type {
-  font-size: 2.5mm;
+/* Colorful left stripe */
+.template-branded .badge-color-stripe {
+  width: 3mm;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.template-branded .badge-color-stripe .stripe-segment {
+  flex: 1;
+}
+
+.template-branded .stripe-cyan { background: #4dd0e1; }
+.template-branded .stripe-pink { background: #f06292; }
+.template-branded .stripe-orange { background: #ffa726; }
+.template-branded .stripe-yellow { background: #d4a843; }
+.template-branded .stripe-teal { background: #26a69a; }
+
+/* Content area */
+.template-branded .badge-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3mm 3mm 2mm;
+  gap: 1.5mm;
+}
+
+/* Photo */
+.template-branded .badge-photo {
+  width: 28mm;
+  height: 32mm;
+  border-radius: 1mm;
+  overflow: hidden;
+  background: #e0e0e0;
+  border: 0.3mm solid #ccc;
+  flex-shrink: 0;
+}
+
+.template-branded .badge-photo-placeholder {
+  color: #bbb;
+}
+
+/* Fields */
+.template-branded .badge-fields {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+  margin-top: 1mm;
+}
+
+.template-branded .badge-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.template-branded .badge-field-label {
+  font-size: 1.8mm;
   font-weight: 600;
-  color: #fbbf24;
+  color: #666;
   text-transform: uppercase;
-  letter-spacing: 0.8mm;
-  margin-top: 0.5mm;
+  letter-spacing: 0.2mm;
 }
 
-.template-branded .badge-employee-id {
-  font-size: 2.2mm;
-  font-weight: 500;
-  color: rgba(255,255,255,0.45);
-  font-family: var(--font-mono);
-  letter-spacing: 0.3mm;
-  margin-top: 0.5mm;
+.template-branded .badge-field-value {
+  font-size: 2.8mm;
+  font-weight: 700;
+  color: #1a1a2e;
+  border-bottom: 0.2mm solid #ccc;
+  padding-bottom: 0.5mm;
+  min-height: 3.5mm;
 }
 
-.template-branded .badge-bottom-bar {
-  display: none;
-}
+/* Hide unused elements */
+.template-branded .badge-left { display: none; }
+.template-branded .badge-right { display: none; }
+.template-branded .badge-bottom-bar { display: none; }
 
 /* ═══════════════════════════════════════════════
    TEMPLATE: Clean White
-   Minimal white with MAGMA logo — professional
+   Same layout but white/minimal — no color stripe
    ═══════════════════════════════════════════════ */
 .badge-card.template-clean {
   background: #ffffff;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
-.template-clean .badge-left {
-  width: 30mm;
+.template-clean .badge-header-bar {
+  background: #ffffff;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3mm 2mm;
-  flex-shrink: 0;
-  position: relative;
+  padding: 3mm 3mm 1mm;
+  min-height: 10mm;
 }
 
-/* Subtle navy bar on left edge */
-.template-clean .badge-left::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 1.5mm;
-  background: #1e293b;
-}
-
-.template-clean .badge-photo {
-  width: 22mm;
-  height: 28mm;
-  border-radius: 1.5mm;
-  overflow: hidden;
-  border: 0.4mm solid #e2e8f0;
-  background: #f8fafc;
-  box-shadow: 0 1mm 3mm rgba(0,0,0,0.08);
-}
-
-.template-clean .badge-photo-placeholder {
-  color: #cbd5e1;
-}
-
-.template-clean .badge-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 4mm 5mm 4mm 3mm;
-  gap: 1.2mm;
+.template-clean .badge-header-title {
+  display: none;
 }
 
 .template-clean .badge-logo {
-  height: 7mm;
+  height: 9mm;
   width: auto;
   object-fit: contain;
-  align-self: flex-start;
-  margin-bottom: 2mm;
 }
 
-.template-clean .badge-name {
-  font-size: 4.5mm;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.2;
-  word-wrap: break-word;
-  letter-spacing: 0.1mm;
+.template-clean .badge-body-area {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 }
 
-.template-clean .badge-staff-type {
-  font-size: 2.5mm;
-  font-weight: 600;
-  color: #1e293b;
-  text-transform: uppercase;
-  letter-spacing: 0.8mm;
-  margin-top: 0.5mm;
-}
-
-.template-clean .badge-employee-id {
-  font-size: 2.2mm;
-  font-weight: 500;
-  color: #94a3b8;
-  font-family: var(--font-mono);
-  letter-spacing: 0.3mm;
-  margin-top: 0.5mm;
-}
-
-.template-clean .badge-bottom-bar {
+.template-clean .badge-color-stripe {
   display: none;
 }
+
+.template-clean .badge-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2mm 4mm;
+  gap: 1.5mm;
+}
+
+.template-clean .badge-photo {
+  width: 28mm;
+  height: 32mm;
+  border-radius: 1mm;
+  overflow: hidden;
+  background: #f8f9fa;
+  border: 0.3mm solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.template-clean .badge-photo-placeholder {
+  color: #d1d5db;
+}
+
+.template-clean .badge-fields {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+  margin-top: 1mm;
+}
+
+.template-clean .badge-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.template-clean .badge-field-label {
+  font-size: 1.8mm;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.2mm;
+}
+
+.template-clean .badge-field-value {
+  font-size: 2.8mm;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 0.2mm solid #e5e7eb;
+  padding-bottom: 0.5mm;
+  min-height: 3.5mm;
+}
+
+.template-clean .badge-left { display: none; }
+.template-clean .badge-right { display: none; }
+.template-clean .badge-bottom-bar { display: none; }
 
 /* Print button */
 .print-btn {
@@ -692,13 +706,11 @@
   }
 
   @page {
-    size: 85.6mm 53.98mm;
+    size: 53.98mm 85.6mm;
     margin: 0;
   }
 
-  .badge-card-print {
-    width: 85.6mm;
-    height: 53.98mm;
+  .badge-card-print .badge-card {
     box-shadow: none;
     border: none;
   }

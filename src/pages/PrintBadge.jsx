@@ -442,29 +442,55 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const staffType = employee.department || 'MAGMA Staff'
   const employeeId = employee.badgeNumber || employee.employeeId
+  const fullName = `${employee.lastName} ${employee.firstName}`.trim()
 
   return (
     <div className={`badge-card template-${template}`}>
-      <div className="badge-left">
-        <div className="badge-photo">
-          {photoDataUrl ? (
-            <img src={photoDataUrl} alt="" />
-          ) : (
-            <div className="badge-photo-placeholder">
-              <User size={28} strokeWidth={1} />
-            </div>
-          )}
+      {/* Header bar */}
+      <div className="badge-header-bar">
+        <div className="badge-header-title">
+          Staff ID<br />Card
         </div>
-      </div>
-      <div className="badge-right">
         <img src={logoSrc} alt="MAGMA" className="badge-logo" />
-        <div className="badge-name">
-          {employee.firstName} {employee.lastName}
-        </div>
-        <div className="badge-staff-type">{staffType}</div>
-        <div className="badge-employee-id">{employeeId}</div>
       </div>
-      <div className="badge-bottom-bar" />
+
+      {/* Body with optional color stripe */}
+      <div className="badge-body-area">
+        <div className="badge-color-stripe">
+          <div className="stripe-segment stripe-cyan" />
+          <div className="stripe-segment stripe-pink" />
+          <div className="stripe-segment stripe-orange" />
+          <div className="stripe-segment stripe-yellow" />
+          <div className="stripe-segment stripe-teal" />
+        </div>
+
+        <div className="badge-content">
+          <div className="badge-photo">
+            {photoDataUrl ? (
+              <img src={photoDataUrl} alt="" />
+            ) : (
+              <div className="badge-photo-placeholder">
+                <User size={28} strokeWidth={1} />
+              </div>
+            )}
+          </div>
+
+          <div className="badge-fields">
+            <div className="badge-field">
+              <span className="badge-field-label">Name:</span>
+              <span className="badge-field-value">{fullName}</span>
+            </div>
+            <div className="badge-field">
+              <span className="badge-field-label">Staff Type:</span>
+              <span className="badge-field-value">{staffType}</span>
+            </div>
+            <div className="badge-field">
+              <span className="badge-field-label">Employee ID:</span>
+              <span className="badge-field-value">{employeeId}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
