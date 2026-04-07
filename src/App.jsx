@@ -147,7 +147,11 @@ function LoginScreen({ onLogin, loading, error }) {
 }
 
 function App() {
-  const { isAuthenticated, user, login, logout, loading } = useAuth()
+  const { isAuthenticated, user, login, logout, loading, sessionExpired } = useAuth()
+
+  if (sessionExpired) {
+    return <LoginScreen onLogin={login} loading={loading} error="Your session has expired. Please sign in again." />
+  }
 
   if (loading && !isAuthenticated) {
     return (

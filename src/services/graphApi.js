@@ -12,20 +12,28 @@ const LIST_NAMES = {
 // ─── Helpers ─────────────────────────────────────────────
 
 async function graphFetch(url, options = {}) {
-  const token = await getAccessToken();
   const { method = 'GET', body, retries = 2 } = options;
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
-
   for (let attempt = 0; attempt <= retries; attempt++) {
+    // Get a fresh token on each attempt (handles expiry between retries)
+    const token = await getAccessToken();
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
     const response = await fetch(`${GRAPH_BASE}${url}`, {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
     });
+
+    if (response.status === 401 && attempt < retries) {
+      // Token expired mid-request — retry will get a fresh token
+      console.warn('Graph API 401 (token expired). Retrying with fresh token...');
+      continue;
+    }
 
     if (response.status === 429) {
       const retryAfter = response.headers.get('Retry-After');
@@ -46,7 +54,7 @@ async function graphFetch(url, options = {}) {
     return response.json();
   }
 
-  throw new Error('Graph API request failed after maximum retries (429 throttling).');
+  throw new Error('Graph API request failed after maximum retries.');
 }
 
 // ─── Site & List ID caching ─────────────────────────────

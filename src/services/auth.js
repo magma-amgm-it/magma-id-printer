@@ -19,14 +19,32 @@ export const loginRequest = {
 
 export const msalInstance = new PublicClientApplication(msalConfig);
 
+// Session expired flag — components can check this to show re-login UI
+let sessionExpired = false;
+const sessionExpiredListeners = new Set();
+
+export function isSessionExpired() {
+  return sessionExpired;
+}
+
+export function onSessionExpired(callback) {
+  sessionExpiredListeners.add(callback);
+  return () => sessionExpiredListeners.delete(callback);
+}
+
+function notifySessionExpired() {
+  sessionExpired = true;
+  sessionExpiredListeners.forEach((cb) => cb());
+}
+
 // Must be called before any MSAL operations
 export async function initializeMsal() {
   await msalInstance.initialize();
-  // Handle redirect response if returning from login
   await msalInstance.handleRedirectPromise();
 }
 
 export async function login() {
+  sessionExpired = false;
   try {
     await msalInstance.loginRedirect(loginRequest);
   } catch (error) {
@@ -49,6 +67,7 @@ export async function logout() {
 export async function getAccessToken() {
   const accounts = msalInstance.getAllAccounts();
   if (accounts.length === 0) {
+    notifySessionExpired();
     throw new Error('No authenticated account found. Please sign in.');
   }
 
@@ -62,16 +81,25 @@ export async function getAccessToken() {
     return response.accessToken;
   } catch (error) {
     if (error instanceof InteractionRequiredAuthError) {
-      // Silent token acquisition failed — fall back to popup
+      // Silent failed — try popup first
       try {
         const response = await msalInstance.acquireTokenPopup(loginRequest);
         return response.accessToken;
       } catch (popupError) {
-        console.error('Token acquisition via popup failed:', popupError);
-        throw popupError;
+        console.warn('Popup failed, falling back to redirect:', popupError.message);
+        // Popup blocked or failed — use redirect as last resort
+        try {
+          await msalInstance.acquireTokenRedirect(loginRequest);
+          // Won't reach here — page redirects
+        } catch (redirectError) {
+          console.error('All token acquisition methods failed:', redirectError);
+          notifySessionExpired();
+          throw redirectError;
+        }
       }
     }
     console.error('Token acquisition failed:', error);
+    notifySessionExpired();
     throw error;
   }
 }

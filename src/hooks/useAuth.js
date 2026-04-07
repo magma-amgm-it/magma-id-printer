@@ -6,6 +6,7 @@ import {
   logout as msalLogout,
   getActiveAccount,
   getAccessToken,
+  onSessionExpired,
 } from '../services/auth';
 
 const GRAPH_ME_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
@@ -15,6 +16,16 @@ export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  // Listen for session expiry events from auth service
+  useEffect(() => {
+    const unsubscribe = onSessionExpired(() => {
+      setSessionExpired(true);
+      setIsAuthenticated(false);
+    });
+    return unsubscribe;
+  }, []);
 
   // Fetch user profile from Graph API
   const fetchUserProfile = useCallback(async () => {
@@ -22,11 +33,9 @@ export function useAuth() {
       const token = await getAccessToken();
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Fetch basic profile
       const profileRes = await fetch(GRAPH_ME_ENDPOINT, { headers });
       const profile = await profileRes.json();
 
-      // Try to fetch photo URL (may 404 if no photo set)
       let photoUrl = null;
       try {
         const photoRes = await fetch(GRAPH_PHOTO_ENDPOINT, { headers });
@@ -35,7 +44,7 @@ export function useAuth() {
           photoUrl = URL.createObjectURL(blob);
         }
       } catch {
-        // No photo available — that's fine
+        // No photo available
       }
 
       setUser({
@@ -58,6 +67,7 @@ export function useAuth() {
         const account = getActiveAccount();
         if (account && mounted) {
           setIsAuthenticated(true);
+          setSessionExpired(false);
           await fetchUserProfile();
         }
       } catch (err) {
@@ -74,9 +84,8 @@ export function useAuth() {
   const login = useCallback(async () => {
     try {
       setLoading(true);
+      setSessionExpired(false);
       await msalLogin();
-      // loginRedirect navigates away, so we won't reach here
-      // Auth state is picked up on return via initializeMsal()
     } catch (err) {
       console.error('Login error:', err);
       setLoading(false);
@@ -95,5 +104,5 @@ export function useAuth() {
     }
   }, []);
 
-  return { isAuthenticated, user, login, logout, loading };
+  return { isAuthenticated, user, login, logout, loading, sessionExpired };
 }
