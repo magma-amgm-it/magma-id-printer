@@ -418,17 +418,14 @@ export default function PrintBadge() {
               </div>
               <div className="modal-body">
                 <div className="print-instructions">
-                  <h4>Step 1: Open the system print dialog</h4>
-                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-                    When the print dialog opens, click <strong>"Print using system dialog"</strong> at the bottom left, or press <strong>Ctrl+Shift+P</strong>
-                  </p>
-                  <h4>Step 2: Set these options:</h4>
+                  <h4>Print settings:</h4>
                   <ul>
                     <li><Check size={14} /> Printer: <strong>Evolis Primacy 2</strong></li>
+                    <li><Check size={14} /> Click <strong>"More settings"</strong> to expand options</li>
                     <li><Check size={14} /> Paper size: <strong>CR80</strong></li>
                     <li><Check size={14} /> Scale: <strong>150%</strong></li>
                     <li><Check size={14} /> Margins: <strong>None</strong></li>
-                    <li><Check size={14} /> Check <strong>"Background graphics"</strong> ✅</li>
+                    <li><Check size={14} /> Check <strong>"Background graphics"</strong></li>
                     <li><Check size={14} /> Pages per sheet: <strong>1</strong></li>
                   </ul>
                 </div>
