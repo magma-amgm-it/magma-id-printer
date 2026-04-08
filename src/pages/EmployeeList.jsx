@@ -226,9 +226,7 @@ export default function EmployeeList() {
             <tr>
               <th style={{ width: '44px' }}></th>
               <th>Employee</th>
-              <th>Department</th>
-              <th>Job Title</th>
-              <th>Badge #</th>
+              <th>Staff Type</th>
               <th style={{ width: '140px' }}>Action</th>
             </tr>
           </thead>
@@ -260,8 +258,6 @@ export default function EmployeeList() {
                       <span className="dept-badge">{emp.department}</span>
                     )}
                   </td>
-                  <td className="cell-secondary">{emp.jobTitle}</td>
-                  <td className="cell-mono">{emp.badgeNumber}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button
