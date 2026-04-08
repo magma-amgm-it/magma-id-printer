@@ -805,9 +805,9 @@
   height: 26mm;
   border-radius: 50%;
   overflow: hidden;
-  border: 0.6mm solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 1mm 4mm rgba(0, 0, 0, 0.4);
-  background: rgba(255, 255, 255, 0.1);
+  border: 0.5mm solid #ffffff;
+  box-shadow: none;
+  background: transparent;
   flex-shrink: 0;
   margin-bottom: 3mm;
 }
@@ -1057,10 +1057,21 @@
   /* KEEP border-radius on photo circles and inner elements */
   .marketing-photo {
     border-radius: 50% !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
   .badge-photo {
     border-radius: 1mm !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove any shadow/bg that could show as grey box */
+  .marketing-logo,
+  .marketing-content,
+  .badge-fields-logo {
+    box-shadow: none !important;
+    background: transparent !important;
   }
 }
 
