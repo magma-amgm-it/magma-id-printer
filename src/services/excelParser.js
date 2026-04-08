@@ -2,11 +2,11 @@ import * as XLSX from 'xlsx'
 
 // Common column name mappings
 const COLUMN_ALIASES = {
-  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'staffid', 'staff_id', 'number', 'empno', 'emp_no'],
+  employeeId: ['employeeid', 'employee_id', 'emp_id', 'empid', 'staffid', 'staff_id', 'number', 'empno', 'emp_no', 'positionid', 'position_id'],
   firstName: ['firstname', 'first_name', 'first', 'fname', 'givenname', 'given_name'],
   lastName: ['lastname', 'last_name', 'last', 'lname', 'surname', 'familyname', 'family_name'],
-  department: ['department', 'dept', 'division', 'team', 'group', 'unit'],
-  jobTitle: ['jobtitle', 'job_title', 'title', 'position', 'role', 'designation'],
+  department: ['department', 'dept', 'division', 'team', 'group', 'unit', 'homedepartmentdescription', 'homedepartment'],
+  jobTitle: ['jobtitle', 'job_title', 'title', 'position', 'role', 'designation', 'workercategorydescription'],
   badgeNumber: ['badgenumber', 'badge_number', 'badge', 'badgeno', 'badge_no', 'cardnumber', 'card_number', 'office'],
   email: ['email', 'emailaddress', 'email_address', 'mail', 'e-mail', 'userprincipalname'],
   phone: ['phone', 'phonenumber', 'phone_number', 'mobile', 'tel', 'telephone', 'mobilephone'],
@@ -70,15 +70,28 @@ export function parseFile(file) {
   })
 }
 
+// Determine staff type based on Home Department Description
+// "World of Wonders Daycare" → "WoW Staff", everything else → "MAGMA Staff"
+function getStaffType(department) {
+  if (!department) return 'MAGMA Staff'
+  const lower = department.toLowerCase()
+  if (lower.includes('world of wonders') || lower.includes('wow') || lower === 'world of wonders daycare') {
+    return 'WoW Staff'
+  }
+  return 'MAGMA Staff'
+}
+
 export function transformData(rawData, columnMapping) {
   return rawData.map((row, index) => {
+    const rawDepartment = String(row[columnMapping.department] || '').trim()
+
     const employee = {
       employeeId: String(
         row[columnMapping.employeeId] || `EMP-${String(index + 1).padStart(4, '0')}`
       ).trim(),
       firstName: String(row[columnMapping.firstName] || '').trim(),
       lastName: String(row[columnMapping.lastName] || '').trim(),
-      department: String(row[columnMapping.department] || '').trim(),
+      department: getStaffType(rawDepartment),
       jobTitle: String(row[columnMapping.jobTitle] || '').trim(),
       badgeNumber: String(row[columnMapping.badgeNumber] || '').trim(),
       email: String(row[columnMapping.email] || '').trim(),
