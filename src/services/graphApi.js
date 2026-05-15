@@ -431,17 +431,21 @@ export async function updateClient(itemId, data) {
   });
 }
 
+export async function deleteClient(itemId) {
+  const siteId = await getSiteId();
+  const listId = await getListId(LIST_NAMES.clients);
+  return graphFetch(`/sites/${siteId}/lists/${listId}/items/${itemId}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function deleteAllClients(onProgress) {
   const clients = await getAllClients();
   let deleted = 0;
 
   for (let i = 0; i < clients.length; i++) {
     try {
-      const siteId = await getSiteId();
-      const listId = await getListId(LIST_NAMES.clients);
-      await graphFetch(`/sites/${siteId}/lists/${listId}/items/${clients[i].id}`, {
-        method: 'DELETE',
-      });
+      await deleteClient(clients[i].id);
       deleted++;
     } catch (err) {
       console.error(`Failed to delete client ${clients[i].id}:`, err);

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Camera, Printer, UserCircle, Trash2, Plus, X, Check, GraduationCap } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getAllClients, getAllPhotoNames, deleteAllClients, createClient } from '../services/graphApi'
+import { getAllClients, getAllPhotoNames, deleteAllClients, deleteClient, createClient } from '../services/graphApi'
 import './EmployeeList.css'
 
 const EMPTY_FORM = {
@@ -21,6 +21,7 @@ export default function ClientList() {
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [deleteProgress, setDeleteProgress] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   // Add client modal
   const [showAddModal, setShowAddModal] = useState(false)
@@ -45,6 +46,23 @@ export default function ClientList() {
       console.error('Failed to load clients:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleDeleteOne(client, e) {
+    e.stopPropagation()
+    if (!window.confirm(`Delete ${client.fullName}? This will remove them from SharePoint.`)) {
+      return
+    }
+    setDeletingId(client.id)
+    try {
+      await deleteClient(client.id)
+      setClients((prev) => prev.filter((c) => c.id !== client.id))
+      toast.success(`Deleted ${client.fullName}`)
+    } catch (err) {
+      toast.error(`Delete failed: ${err.message}`)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -195,7 +213,7 @@ export default function ClientList() {
               <th>Program</th>
               <th>Email</th>
               <th>Start Date</th>
-              <th style={{ width: '100px' }}>Action</th>
+              <th style={{ width: '140px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -231,16 +249,26 @@ export default function ClientList() {
                     {client.startDate ? new Date(client.startDate).toLocaleDateString() : ''}
                   </td>
                   <td>
-                    <button
-                      className="print-row-btn"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        navigate(`/print-client/${client.clientId}`)
-                      }}
-                    >
-                      <Printer size={14} />
-                      Print
-                    </button>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <button
+                        className="print-row-btn"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          navigate(`/print-client/${client.clientId}`)
+                        }}
+                      >
+                        <Printer size={14} />
+                        Print
+                      </button>
+                      <button
+                        className="delete-row-btn"
+                        onClick={(e) => handleDeleteOne(client, e)}
+                        disabled={deletingId === client.id}
+                        title="Delete this client"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </motion.tr>
               )
