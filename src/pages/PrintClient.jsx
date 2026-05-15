@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, X, User
+  AlertCircle, X, User, Pencil
 } from 'lucide-react'
 import Webcam from 'react-webcam'
 import toast from 'react-hot-toast'
 import {
   getClient, getAllClients, uploadPhoto, downloadPhoto,
-  addPrintRecord
+  addPrintRecord, updateClient
 } from '../services/graphApi'
 import { getActiveAccount } from '../services/auth'
 import { printBadge } from '../services/printService'
@@ -32,6 +32,11 @@ export default function PrintClient() {
 
   const [showPrintModal, setShowPrintModal] = useState(false)
   const [template, setTemplate] = useState('branded')
+
+  // Edit client modal
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editForm, setEditForm] = useState({ firstName: '', lastName: '', program: '', startDate: '' })
+  const [savingEdit, setSavingEdit] = useState(false)
 
   useEffect(() => {
     if (clientId) loadClient(clientId)
@@ -122,6 +127,49 @@ export default function PrintClient() {
     }
     reader.readAsDataURL(file)
     e.target.value = ''
+  }
+
+  function openEditModal() {
+    if (!client) return
+    setEditForm({
+      firstName: client.firstName || '',
+      lastName: client.lastName || '',
+      program: client.program || '',
+      startDate: client.startDate ? client.startDate.slice(0, 10) : '',
+    })
+    setShowEditModal(true)
+  }
+
+  async function handleSaveEdit() {
+    if (!client) return
+    if (!editForm.firstName.trim() && !editForm.lastName.trim()) {
+      toast.error('Please enter at least a first or last name.')
+      return
+    }
+    setSavingEdit(true)
+    try {
+      await updateClient(client.id, {
+        FirstName: editForm.firstName,
+        LastName: editForm.lastName,
+        Program: editForm.program,
+        StartDate: editForm.startDate || null,
+      })
+      setClient((prev) => ({
+        ...prev,
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        fullName: [editForm.firstName, editForm.lastName].filter(Boolean).join(' '),
+        program: editForm.program,
+        startDate: editForm.startDate || '',
+      }))
+      toast.success('Client updated!')
+      setShowEditModal(false)
+    } catch (err) {
+      console.error('Update failed:', err)
+      toast.error(`Update failed: ${err.message}`)
+    } finally {
+      setSavingEdit(false)
+    }
   }
 
   async function handlePrint() {
@@ -283,6 +331,11 @@ export default function PrintClient() {
             />
 
             <div className="employee-info-card">
+              <div className="info-row" style={{ justifyContent: 'flex-end', borderBottom: 'none', paddingBottom: 0 }}>
+                <button className="btn btn-ghost btn-sm" onClick={openEditModal}>
+                  <Pencil size={14} /> Edit
+                </button>
+              </div>
               <div className="info-row">
                 <span className="info-label">Name</span>
                 <span className="info-value">{client.fullName}</span>
@@ -371,6 +424,84 @@ export default function PrintClient() {
           </div>
         )}
       </div>
+
+      {/* Edit Client Modal */}
+      <AnimatePresence>
+        {showEditModal && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowEditModal(false)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: 480 }}
+            >
+              <div className="modal-header">
+                <h3>Edit Client</h3>
+                <button className="modal-close" onClick={() => setShowEditModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="add-form">
+                  <div className="form-field">
+                    <label className="form-label">First Name<span style={{ color: 'var(--accent-danger)' }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.firstName}
+                      onChange={(e) => setEditForm((p) => ({ ...p, firstName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Last Name<span style={{ color: 'var(--accent-danger)' }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.lastName}
+                      onChange={(e) => setEditForm((p) => ({ ...p, lastName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Program</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.program}
+                      onChange={(e) => setEditForm((p) => ({ ...p, program: e.target.value }))}
+                      placeholder="LINC, CELPIP, Language..."
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Expiry Date</label>
+                    <input
+                      type="date"
+                      className="form-input"
+                      value={editForm.startDate}
+                      onChange={(e) => setEditForm((p) => ({ ...p, startDate: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-ghost" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={handleSaveEdit} disabled={savingEdit}>
+                  {savingEdit ? 'Saving...' : (<><Check size={16} /> Save Changes</>)}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Print Modal */}
       <AnimatePresence>
