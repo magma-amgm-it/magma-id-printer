@@ -296,7 +296,37 @@
   overflow: hidden;
 }
 
-/* Template selector (dropdown) */
+/* Template switcher (button row — used by the Client ID page) */
+.template-switcher {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.template-btn {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.template-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.template-btn:hover:not(.active) {
+  background: var(--bg-main);
+}
+
+/* Template selector (dropdown — used by the Print Badge page) */
 .template-select-wrap {
   position: relative;
   margin-bottom: var(--space-3);
