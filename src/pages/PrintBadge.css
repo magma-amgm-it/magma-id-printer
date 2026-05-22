@@ -296,34 +296,45 @@
   overflow: hidden;
 }
 
-/* Template switcher */
-.template-switcher {
-  display: flex;
-  gap: var(--space-2);
+/* Template selector (dropdown) */
+.template-select-wrap {
+  position: relative;
   margin-bottom: var(--space-3);
 }
 
-.template-btn {
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
+.template-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: var(--space-3) var(--space-4);
+  padding-right: var(--space-8);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: var(--text-xs);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
   font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
-  transition: all var(--duration-fast) ease;
+  transition: border-color var(--duration-fast) ease;
 }
 
-.template-btn.active {
-  background: var(--accent-primary);
-  color: white;
+.template-select:hover {
   border-color: var(--accent-primary);
 }
 
-.template-btn:hover:not(.active) {
-  background: var(--bg-main);
+.template-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.template-select-icon {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════════
@@ -1081,6 +1092,306 @@
 .template-spotlight .branded-body,
 .template-spotlight .branded-footer { display: none; }
 
+/* ═══════════════════════════════════════════════
+   TEMPLATE: Mirror
+   Photo on the LEFT, curved purple panel on the RIGHT.
+   Name / Staff Type / Employee ID — no job title.
+   ═══════════════════════════════════════════════ */
+.badge-card.template-mirror {
+  background: #2a2654;
+  position: relative;
+  overflow: hidden;
+}
+
+.template-mirror .mirror-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.template-mirror .mirror-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 35% 30%;
+}
+
+.template-mirror .mirror-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d5e0;
+  color: rgba(42, 38, 84, 0.3);
+}
+
+/* Purple panel — curved (concave) left edge bulging into the photo */
+.template-mirror .mirror-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 59mm;
+  background: #2a2654;
+  border-radius: 5.7mm 0 0 5.7mm / 26.99mm 0 0 26.99mm;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 4.5mm 4mm 4mm;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  overflow: hidden;
+}
+
+.template-mirror .mirror-panel::before {
+  content: '';
+  position: absolute;
+  top: -14mm;
+  right: -16mm;
+  width: 54mm;
+  height: 54mm;
+  background-image: url('/magma-id-printer/magma-ring-white.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.06;
+  z-index: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.template-mirror .mirror-logo {
+  height: 8.5mm;
+  width: auto;
+  max-width: 32mm;
+  object-fit: contain;
+  object-position: right center;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.template-mirror .mirror-name {
+  position: relative;
+  z-index: 1;
+  margin-top: 5mm;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 6.2mm;
+  max-height: 22mm;
+  overflow: hidden;
+}
+
+.template-mirror .mirror-name-line {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1.05;
+  color: #ffffff;
+  overflow-wrap: anywhere;
+}
+
+.template-mirror .mirror-accent {
+  position: relative;
+  z-index: 1;
+  width: 9mm;
+  height: 0.8mm;
+  background: #e27580;
+  border-radius: 0.4mm;
+  margin-top: 2.4mm;
+  flex-shrink: 0;
+}
+
+.template-mirror .mirror-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  width: 46mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3mm;
+  border-top: 0.3mm solid rgba(255, 255, 255, 0.18);
+  padding-top: 2.4mm;
+  text-align: left;
+}
+
+.template-mirror .mirror-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8mm;
+  min-width: 0;
+}
+
+.template-mirror .mirror-meta-label {
+  font-size: 1.7mm;
+  font-weight: 600;
+  letter-spacing: 0.3mm;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+.template-mirror .mirror-meta-value {
+  font-size: 2.7mm;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═══════════════════════════════════════════════
+   TEMPLATE: Portrait
+   Vertical card — photo on top, curved purple panel below.
+   Name / Staff Type / Employee ID — no job title.
+   ═══════════════════════════════════════════════ */
+.badge-card.template-portrait {
+  width: 53.98mm;
+  height: 85.6mm;
+  background: #2a2654;
+  position: relative;
+  overflow: hidden;
+}
+
+.template-portrait .portrait-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.template-portrait .portrait-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 25%;
+}
+
+.template-portrait .portrait-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d5e0;
+  color: rgba(42, 38, 84, 0.3);
+}
+
+/* Logo sits over the photo, top-left */
+.template-portrait .portrait-logo {
+  position: absolute;
+  top: 3.5mm;
+  left: 4mm;
+  height: 7mm;
+  width: auto;
+  max-width: 34mm;
+  object-fit: contain;
+  object-position: left center;
+  z-index: 2;
+}
+
+/* Purple panel — curved (concave) top edge bulging into the photo */
+.template-portrait .portrait-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44.6mm;
+  background: #2a2654;
+  border-radius: 26.99mm 26.99mm 0 0 / 3.5mm 3.5mm 0 0;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 5.7mm 4.5mm 4.5mm;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.template-portrait .portrait-panel::before {
+  content: '';
+  position: absolute;
+  bottom: -12mm;
+  right: -14mm;
+  width: 42mm;
+  height: 42mm;
+  background-image: url('/magma-id-printer/magma-ring-white.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.06;
+  z-index: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.template-portrait .portrait-name {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 5.2mm;
+  max-height: 16mm;
+  overflow: hidden;
+}
+
+.template-portrait .portrait-name-line {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1.05;
+  color: #ffffff;
+  overflow-wrap: anywhere;
+}
+
+.template-portrait .portrait-accent {
+  position: relative;
+  z-index: 1;
+  width: 8mm;
+  height: 0.8mm;
+  background: #e27580;
+  border-radius: 0.4mm;
+  margin-top: 2.2mm;
+  flex-shrink: 0;
+}
+
+.template-portrait .portrait-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3mm;
+  border-top: 0.3mm solid rgba(255, 255, 255, 0.18);
+  padding-top: 2.6mm;
+}
+
+.template-portrait .portrait-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8mm;
+  min-width: 0;
+}
+
+.template-portrait .portrait-meta-label {
+  font-size: 1.7mm;
+  font-weight: 600;
+  letter-spacing: 0.3mm;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+.template-portrait .portrait-meta-value {
+  font-size: 2.7mm;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Print button */
 .print-btn {
   display: flex;
@@ -1276,6 +1587,21 @@
   }
 
   .template-spotlight::before {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Mirror / Portrait: preserve the curved purple panels + watermarks */
+  .template-mirror .mirror-panel {
+    border-radius: 5.7mm 0 0 5.7mm / 26.99mm 0 0 26.99mm !important;
+  }
+
+  .template-portrait .portrait-panel {
+    border-radius: 26.99mm 26.99mm 0 0 / 3.5mm 3.5mm 0 0 !important;
+  }
+
+  .template-mirror .mirror-panel::before,
+  .template-portrait .portrait-panel::before {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

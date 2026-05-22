@@ -33,7 +33,8 @@ export default function PrintBadge() {
 
   // Print modal
   const [showPrintModal, setShowPrintModal] = useState(false)
-  const [template, setTemplate] = useState('premium') // 'premium' | 'branded' | 'clean' | 'marketing' | 'spotlight'
+  // 'premium' | 'branded' | 'clean' | 'marketing' | 'spotlight' | 'mirror' | 'portrait'
+  const [template, setTemplate] = useState('premium')
 
   useEffect(() => {
     if (employeeId) {
@@ -333,38 +334,23 @@ export default function PrintBadge() {
               <h3>Badge Preview</h3>
             </div>
 
-            {/* Template Switcher */}
-            <div className="template-switcher">
-              <button
-                className={`template-btn ${template === 'premium' ? 'active' : ''}`}
-                onClick={() => setTemplate('premium')}
+            {/* Template Selector */}
+            <div className="template-select-wrap">
+              <select
+                className="template-select"
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+                aria-label="Card design"
               >
-                Premium
-              </button>
-              <button
-                className={`template-btn ${template === 'branded' ? 'active' : ''}`}
-                onClick={() => setTemplate('branded')}
-              >
-                Branded
-              </button>
-              <button
-                className={`template-btn ${template === 'clean' ? 'active' : ''}`}
-                onClick={() => setTemplate('clean')}
-              >
-                Clean White
-              </button>
-              <button
-                className={`template-btn ${template === 'marketing' ? 'active' : ''}`}
-                onClick={() => setTemplate('marketing')}
-              >
-                Marketing
-              </button>
-              <button
-                className={`template-btn ${template === 'spotlight' ? 'active' : ''}`}
-                onClick={() => setTemplate('spotlight')}
-              >
-                Spotlight
-              </button>
+                <option value="premium">Premium</option>
+                <option value="branded">Branded</option>
+                <option value="clean">Clean White</option>
+                <option value="marketing">Marketing</option>
+                <option value="spotlight">Spotlight</option>
+                <option value="mirror">Mirror</option>
+                <option value="portrait">Portrait</option>
+              </select>
+              <ChevronDown size={16} className="template-select-icon" />
             </div>
 
             <div className="card-preview-wrapper">
@@ -615,6 +601,94 @@ function BadgeCard({ template, employee, photoDataUrl }) {
                 <img src={qrSrc} alt="QR code" />
               </div>
             )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Mirror: photo on the left, curved purple panel on the right.
+  // Fields: name, staff type, employee ID (no job title).
+  if (template === 'mirror') {
+    const mFirst = employee.firstName || fullName.split(' ')[0] || ''
+    const mLast =
+      employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
+    const longest = Math.max(mFirst.length, mLast.length, 1)
+    const nameSize =
+      longest <= 9 ? 6.2 : longest <= 11 ? 5.4 : longest <= 14 ? 4.6 : 3.9
+    const logoTight = import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
+
+    return (
+      <div className="badge-card template-mirror">
+        <div className="mirror-photo">
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="" />
+          ) : (
+            <div className="mirror-photo-placeholder">
+              <User size={28} strokeWidth={1} />
+            </div>
+          )}
+        </div>
+        <div className="mirror-panel">
+          <img src={logoTight} alt="MAGMA AMGM" className="mirror-logo" />
+          <div className="mirror-name" style={{ fontSize: `${nameSize}mm` }}>
+            <span className="mirror-name-line">{mFirst}</span>
+            {mLast && <span className="mirror-name-line">{mLast}</span>}
+          </div>
+          <div className="mirror-accent" />
+          <div className="mirror-footer">
+            <div className="mirror-meta">
+              <span className="mirror-meta-label">Staff Type</span>
+              <span className="mirror-meta-value">{staffType}</span>
+            </div>
+            <div className="mirror-meta">
+              <span className="mirror-meta-label">Employee ID</span>
+              <span className="mirror-meta-value">{employeeId}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Portrait: vertical card, photo on top, curved purple panel below.
+  // Fields: name, staff type, employee ID (no job title).
+  if (template === 'portrait') {
+    const pFirst = employee.firstName || fullName.split(' ')[0] || ''
+    const pLast =
+      employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
+    const longest = Math.max(pFirst.length, pLast.length, 1)
+    const nameSize =
+      longest <= 10 ? 5.2 : longest <= 13 ? 4.4 : longest <= 16 ? 3.7 : 3.2
+    const logoTight = import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
+
+    return (
+      <div className="badge-card template-portrait">
+        <div className="portrait-photo">
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="" />
+          ) : (
+            <div className="portrait-photo-placeholder">
+              <User size={32} strokeWidth={1} />
+            </div>
+          )}
+        </div>
+        <img src={logoTight} alt="MAGMA AMGM" className="portrait-logo" />
+        <div className="portrait-panel">
+          <div className="portrait-name" style={{ fontSize: `${nameSize}mm` }}>
+            <span className="portrait-name-line">{pFirst}</span>
+            {pLast && <span className="portrait-name-line">{pLast}</span>}
+          </div>
+          <div className="portrait-accent" />
+          <div className="portrait-footer">
+            <div className="portrait-meta">
+              <span className="portrait-meta-label">Staff Type</span>
+              <span className="portrait-meta-value">{staffType}</span>
+            </div>
+            <div className="portrait-meta">
+              <span className="portrait-meta-label">Employee ID</span>
+              <span className="portrait-meta-value">{employeeId}</span>
+            </div>
           </div>
         </div>
       </div>
