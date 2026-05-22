@@ -994,21 +994,7 @@
   flex-shrink: 0;
 }
 
-/* Job title — uppercase, tracked, max two lines */
-.template-spotlight .spotlight-title {
-  font-size: 2.2mm;
-  font-weight: 600;
-  letter-spacing: 0.32mm;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* ── Footer band: Department | Employee ID (+ QR) ──
+/* ── Footer band: Staff Type | Employee ID (+ QR) ──
    Widened past the text column: the photo's curved edge
    recedes near the bottom, freeing horizontal room here. */
 .template-spotlight .spotlight-footer {

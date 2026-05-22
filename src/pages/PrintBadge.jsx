@@ -558,7 +558,6 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     const spotFirst = employee.firstName || fullName.split(' ')[0] || ''
     const spotLast =
       employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
-    const jobTitle = employee.jobTitle || staffType
     const qrSrc = employee.qrCodeUrl || employee.qrCode || null
 
     // Auto-size the name by longest word so long names never overflow
@@ -602,11 +601,9 @@ function BadgeCard({ template, employee, photoDataUrl }) {
 
           <div className="spotlight-accent" />
 
-          <div className="spotlight-title">{jobTitle}</div>
-
           <div className={`spotlight-footer${qrSrc ? ' has-qr' : ''}`}>
             <div className="spotlight-meta">
-              <span className="spotlight-meta-label">Department</span>
+              <span className="spotlight-meta-label">Staff Type</span>
               <span className="spotlight-meta-value">{staffType}</span>
             </div>
             <div className="spotlight-meta">
