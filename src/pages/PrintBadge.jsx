@@ -584,16 +584,11 @@ function BadgeCard({ template, employee, photoDataUrl }) {
 
         {/* Text column */}
         <div className="spotlight-content">
-          <div className="spotlight-logo">
-            <img
-              src={logoWhiteSrc}
-              alt=""
-              className="spotlight-logo-mark"
-            />
-            <span className="spotlight-logo-text">
-              MAGMA<br />AMGM
-            </span>
-          </div>
+          <img
+            src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
+            alt="MAGMA AMGM"
+            className="spotlight-logo"
+          />
 
           <div
             className="spotlight-name"

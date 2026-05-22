@@ -891,20 +891,20 @@
   overflow: hidden;
 }
 
-/* Subtle puzzle-piece / logo watermark behind the text */
+/* Subtle puzzle-ring watermark behind the text */
 .template-spotlight::before {
   content: '';
   position: absolute;
-  top: -8mm;
-  left: -10mm;
-  width: 48mm;
-  height: 48mm;
-  background-image: url('/magma-id-printer/magma-logo-white.png');
+  top: -13mm;
+  left: -15mm;
+  width: 56mm;
+  height: 56mm;
+  background-image: url('/magma-id-printer/magma-ring-white.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  opacity: 0.05;
-  transform: rotate(-12deg);
+  opacity: 0.06;
+  transform: rotate(-10deg);
   z-index: 0;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -953,29 +953,15 @@
   flex-direction: column;
 }
 
-/* Logo, top-left: puzzle ring mark + stacked wordmark */
+/* Logo, top-left — the real MAGMA AMGM white logo (ring + wordmark) */
 .template-spotlight .spotlight-logo {
-  display: flex;
-  align-items: center;
-  gap: 1.6mm;
-  margin-bottom: 3mm;
-  flex-shrink: 0;
-}
-
-.template-spotlight .spotlight-logo-mark {
-  height: 8mm;
-  width: 8mm;
+  height: 9mm;
+  width: auto;
+  max-width: 34mm;
   object-fit: contain;
+  object-position: left center;
+  margin-bottom: 3.5mm;
   flex-shrink: 0;
-}
-
-.template-spotlight .spotlight-logo-text {
-  font-family: var(--font-sans);
-  font-size: 3.1mm;
-  font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: 0.15mm;
-  color: #ffffff;
 }
 
 /* Name — large serif, one word per line.
