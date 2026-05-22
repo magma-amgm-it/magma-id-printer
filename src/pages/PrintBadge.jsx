@@ -33,7 +33,7 @@ export default function PrintBadge() {
 
   // Print modal
   const [showPrintModal, setShowPrintModal] = useState(false)
-  const [template, setTemplate] = useState('premium') // 'premium', 'branded', or 'clean'
+  const [template, setTemplate] = useState('premium') // 'premium' | 'branded' | 'clean' | 'marketing' | 'spotlight'
 
   useEffect(() => {
     if (employeeId) {
@@ -359,6 +359,12 @@ export default function PrintBadge() {
               >
                 Marketing
               </button>
+              <button
+                className={`template-btn ${template === 'spotlight' ? 'active' : ''}`}
+                onClick={() => setTemplate('spotlight')}
+              >
+                Spotlight
+              </button>
             </div>
 
             <div className="card-preview-wrapper">
@@ -541,6 +547,83 @@ function BadgeCard({ template, employee, photoDataUrl }) {
         </div>
         <div className="marketing-footer">
           <span className="marketing-footer-text">{employeeId}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Spotlight: navy card, large serif name, curved photo on right,
+  // footer band with Department + Employee ID (+ optional QR)
+  if (template === 'spotlight') {
+    const spotFirst = employee.firstName || fullName.split(' ')[0] || ''
+    const spotLast =
+      employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
+    const jobTitle = employee.jobTitle || staffType
+    const qrSrc = employee.qrCodeUrl || employee.qrCode || null
+
+    // Auto-size the name by longest word so long names never overflow
+    const longestName = Math.max(spotFirst.length, spotLast.length, 1)
+    const nameSize =
+      longestName <= 9 ? 6.4
+      : longestName <= 11 ? 5.6
+      : longestName <= 14 ? 4.7
+      : 4.0
+
+    return (
+      <div className="badge-card template-spotlight">
+        {/* Photo — curved left edge, anchored to the right */}
+        <div className="spotlight-photo">
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="" />
+          ) : (
+            <div className="spotlight-photo-placeholder">
+              <User size={28} strokeWidth={1} />
+            </div>
+          )}
+        </div>
+
+        {/* Text column */}
+        <div className="spotlight-content">
+          <div className="spotlight-logo">
+            <img
+              src={logoWhiteSrc}
+              alt=""
+              className="spotlight-logo-mark"
+            />
+            <span className="spotlight-logo-text">
+              MAGMA<br />AMGM
+            </span>
+          </div>
+
+          <div
+            className="spotlight-name"
+            style={{ fontSize: `${nameSize}mm` }}
+          >
+            <span className="spotlight-name-line">{spotFirst}</span>
+            {spotLast && (
+              <span className="spotlight-name-line">{spotLast}</span>
+            )}
+          </div>
+
+          <div className="spotlight-accent" />
+
+          <div className="spotlight-title">{jobTitle}</div>
+
+          <div className={`spotlight-footer${qrSrc ? ' has-qr' : ''}`}>
+            <div className="spotlight-meta">
+              <span className="spotlight-meta-label">Department</span>
+              <span className="spotlight-meta-value">{staffType}</span>
+            </div>
+            <div className="spotlight-meta">
+              <span className="spotlight-meta-label">Employee ID</span>
+              <span className="spotlight-meta-value">{employeeId}</span>
+            </div>
+            {qrSrc && (
+              <div className="spotlight-qr">
+                <img src={qrSrc} alt="QR code" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     )

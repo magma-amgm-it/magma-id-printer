@@ -879,6 +879,236 @@
 .template-marketing .badge-bottom-bar { display: none; }
 .template-marketing .badge-fields-logo { display: none; }
 
+/* ═══════════════════════════════════════════════
+   TEMPLATE: Spotlight
+   Navy card, large serif name, photo with a curved
+   left edge anchored right, footer band with
+   Department + Employee ID (+ optional QR).
+   ═══════════════════════════════════════════════ */
+.badge-card.template-spotlight {
+  background: #312c54;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle puzzle-piece / logo watermark behind the text */
+.template-spotlight::before {
+  content: '';
+  position: absolute;
+  top: -8mm;
+  left: -10mm;
+  width: 48mm;
+  height: 48mm;
+  background-image: url('/magma-id-printer/magma-logo-white.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.05;
+  transform: rotate(-12deg);
+  z-index: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Photo: curved left edge, pinned to the right ── */
+.template-spotlight .spotlight-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40mm;
+  height: 100%;
+  /* horizontal radius 13mm = gentle bulge;
+     vertical radius 26.99mm = half-height -> one smooth arc */
+  border-radius: 13mm 0 0 13mm / 26.99mm 0 0 26.99mm;
+  overflow: hidden;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.template-spotlight .spotlight-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top; /* keep faces, crop from the bottom */
+}
+
+.template-spotlight .spotlight-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Text column (kept clear of the photo's deepest bulge) ── */
+.template-spotlight .spotlight-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: 45mm;
+  box-sizing: border-box;
+  padding: 5mm 4mm 4.5mm 5.5mm;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Logo, top-left: puzzle ring mark + stacked wordmark */
+.template-spotlight .spotlight-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.6mm;
+  margin-bottom: 3mm;
+  flex-shrink: 0;
+}
+
+.template-spotlight .spotlight-logo-mark {
+  height: 8mm;
+  width: 8mm;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.template-spotlight .spotlight-logo-text {
+  font-family: var(--font-sans);
+  font-size: 3.1mm;
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: 0.15mm;
+  color: #ffffff;
+}
+
+/* Name — large serif, one word per line.
+   Base font-size is set inline per-card (auto-sized by name length). */
+.template-spotlight .spotlight-name {
+  display: flex;
+  flex-direction: column;
+  font-size: 6.4mm;          /* fallback; overridden inline */
+  max-height: 22mm;
+  overflow: hidden;
+}
+
+.template-spotlight .spotlight-name-line {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: inherit;        /* inherits the auto-sized value */
+  font-weight: 500;
+  line-height: 1.05;
+  color: #ffffff;
+  letter-spacing: 0.02mm;
+  overflow-wrap: anywhere;   /* hard safety net for very long words */
+}
+
+/* Coral accent rule under the name */
+.template-spotlight .spotlight-accent {
+  width: 9mm;
+  height: 0.8mm;
+  background: #e07d68;
+  border-radius: 0.4mm;
+  margin: 1.5mm 0 1.7mm;
+  flex-shrink: 0;
+}
+
+/* Job title — uppercase, tracked, max two lines */
+.template-spotlight .spotlight-title {
+  font-size: 2.2mm;
+  font-weight: 600;
+  letter-spacing: 0.32mm;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Footer band: Department | Employee ID (+ QR) ──
+   Widened past the text column: the photo's curved edge
+   recedes near the bottom, freeing horizontal room here. */
+.template-spotlight .spotlight-footer {
+  margin-top: auto;
+  width: 41mm;
+  display: flex;
+  align-items: flex-end;
+  border-top: 0.3mm solid rgba(255, 255, 255, 0.16);
+  padding-top: 2.2mm;
+}
+
+.template-spotlight .spotlight-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7mm;
+  padding: 0 2.4mm;
+}
+
+.template-spotlight .spotlight-meta:first-child {
+  padding-left: 0;
+}
+
+/* Thin vertical divider between the two meta cells */
+.template-spotlight .spotlight-meta + .spotlight-meta {
+  border-left: 0.3mm solid rgba(255, 255, 255, 0.16);
+}
+
+.template-spotlight .spotlight-meta-label {
+  font-size: 1.7mm;
+  font-weight: 600;
+  letter-spacing: 0.3mm;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.template-spotlight .spotlight-meta-value {
+  font-size: 2.7mm;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* When a QR is present the footer is tighter — shrink type to fit */
+.template-spotlight .spotlight-footer.has-qr .spotlight-meta {
+  padding: 0 1.6mm;
+}
+
+.template-spotlight .spotlight-footer.has-qr .spotlight-meta-label {
+  font-size: 1.5mm;
+  letter-spacing: 0.18mm;
+}
+
+.template-spotlight .spotlight-footer.has-qr .spotlight-meta-value {
+  font-size: 2.3mm;
+}
+
+/* Optional QR — only renders when a qrCodeUrl is supplied */
+.template-spotlight .spotlight-qr {
+  flex-shrink: 0;
+  width: 7mm;
+  height: 7mm;
+  margin-left: 1.4mm;
+  padding: 0.5mm;
+  background: #ffffff;
+  border-radius: 0.6mm;
+}
+
+.template-spotlight .spotlight-qr img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Hide unused generic elements */
+.template-spotlight .badge-header-bar,
+.template-spotlight .badge-body-area,
+.template-spotlight .branded-header,
+.template-spotlight .branded-body,
+.template-spotlight .branded-footer { display: none; }
+
 /* Print button */
 .print-btn {
   display: flex;
@@ -1065,6 +1295,17 @@
   .badge-photo {
     border-radius: 1mm !important;
     box-shadow: none !important;
+  }
+
+  /* Spotlight: preserve the curved photo edge + watermark on print */
+  .template-spotlight .spotlight-photo {
+    border-radius: 13mm 0 0 13mm / 26.99mm 0 0 26.99mm !important;
+    box-shadow: none !important;
+  }
+
+  .template-spotlight::before {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   /* Remove any shadow/bg that could show as grey box */
