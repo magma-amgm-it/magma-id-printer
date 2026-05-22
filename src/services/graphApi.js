@@ -98,12 +98,14 @@ function mapEmployeeFromSharePoint(item) {
   const f = item.fields;
   const firstName = f.FirstName || '';
   const lastName = f.LastName || '';
-  // Display relabel only: stored value "MAGMA Staff" is shown simply as
-  // "MAGMA". SharePoint data is left untouched — this just changes display.
+  // Display relabel only: stored values "MAGMA Staff" / "WoW Staff" are
+  // shown simply as "MAGMA" / "WoW". SharePoint data is left untouched —
+  // this just changes display.
   const rawDepartment = f.Department || '';
+  const deptKey = rawDepartment.trim().toLowerCase();
   const department =
-    rawDepartment.trim().toLowerCase() === 'magma staff'
-      ? 'MAGMA'
+    deptKey === 'magma staff' ? 'MAGMA'
+      : deptKey === 'wow staff' ? 'WoW'
       : rawDepartment;
   const jobTitle = f.JobTitle || '';
   const badgeNumber = f.BadgeNumber || '';
