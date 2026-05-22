@@ -322,7 +322,7 @@ export default function PrintBadge() {
               </div>
               <div className="info-row">
                 <span className="info-label">Staff Type</span>
-                <span className="info-value">{employee.department || 'MAGMA Staff'}</span>
+                <span className="info-value">{employee.department || 'MAGMA'}</span>
               </div>
             </div>
           </div>
@@ -463,7 +463,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
-  const staffType = employee.department || 'MAGMA Staff'
+  const staffType = employee.department || 'MAGMA'
   const employeeId = employee.badgeNumber || employee.employeeId
   const fullName = `${employee.lastName} ${employee.firstName}`.trim()
 
