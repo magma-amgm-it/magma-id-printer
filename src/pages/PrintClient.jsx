@@ -391,6 +391,12 @@ export default function PrintClient() {
               >
                 Marketing
               </button>
+              <button
+                className={`template-btn ${template === 'spotlight' ? 'active' : ''}`}
+                onClick={() => setTemplate('spotlight')}
+              >
+                Spotlight
+              </button>
             </div>
 
             <div className="card-preview-wrapper">
@@ -606,6 +612,66 @@ function ClientCard({ template, client, photoDataUrl }) {
     </div>
   )
 
+  // Spotlight: navy card, large serif name, curved photo on right,
+  // footer band with Program + Expiry (client-side mirror of employee Spotlight)
+  if (template === 'spotlight') {
+    const spotFirst = client.firstName || (client.fullName || '').split(' ')[0] || ''
+    const spotLast =
+      client.lastName || (client.fullName || '').split(' ').slice(1).join(' ') || ''
+
+    const longestName = Math.max(spotFirst.length, spotLast.length, 1)
+    const nameSize =
+      longestName <= 9 ? 6.4
+      : longestName <= 11 ? 5.6
+      : longestName <= 14 ? 4.7
+      : 4.0
+
+    return (
+      <div className="badge-card template-spotlight">
+        <div className="spotlight-photo">
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="" />
+          ) : (
+            <div className="spotlight-photo-placeholder">
+              <User size={28} strokeWidth={1} />
+            </div>
+          )}
+        </div>
+
+        <div className="spotlight-content">
+          <img
+            src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
+            alt="MAGMA AMGM"
+            className="spotlight-logo"
+          />
+
+          <div
+            className="spotlight-name"
+            style={{ fontSize: `${nameSize}mm` }}
+          >
+            <span className="spotlight-name-line">{spotFirst}</span>
+            {spotLast && (
+              <span className="spotlight-name-line">{spotLast}</span>
+            )}
+          </div>
+
+          <div className="spotlight-accent" />
+
+          <div className="spotlight-footer">
+            <div className="spotlight-meta">
+              <span className="spotlight-meta-label">Program</span>
+              <span className="spotlight-meta-value">{program}</span>
+            </div>
+            <div className="spotlight-meta">
+              <span className="spotlight-meta-label">Expiry</span>
+              <span className="spotlight-meta-value">{expiryDate}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Branded: [NAVY HEADER with logo] [photo left | title+fields right] [COLORFUL FOOTER]
   if (template === 'branded') {
     return (
@@ -616,7 +682,7 @@ function ClientCard({ template, client, photoDataUrl }) {
         <div className="branded-body">
           {photoEl}
           <div className="branded-info">
-            <div className="branded-title">Client ID Card</div>
+            <div className="branded-title">Student ID Card</div>
             {fieldsEl}
           </div>
         </div>
