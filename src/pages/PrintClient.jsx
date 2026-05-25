@@ -655,9 +655,12 @@ function ClientCard({ template, client, photoDataUrl }) {
             )}
           </div>
 
+          <div className="spotlight-accent" />
+
           <div
             style={{
-              marginTop: '0.6mm',
+              marginTop: '0.8mm',
+              marginBottom: '1.4mm',
               fontFamily: "Georgia, 'Times New Roman', serif",
               fontStyle: 'italic',
               fontWeight: 400,
@@ -669,8 +672,6 @@ function ClientCard({ template, client, photoDataUrl }) {
           >
             Student ID Card
           </div>
-
-          <div className="spotlight-accent" />
 
           <div className="spotlight-footer">
             <div className="spotlight-meta">
