@@ -657,6 +657,20 @@ function ClientCard({ template, client, photoDataUrl }) {
 
           <div className="spotlight-accent" />
 
+          <div
+            style={{
+              marginTop: '1.6mm',
+              fontFamily: "'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: '2.4mm',
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.75)',
+            }}
+          >
+            Student ID Card
+          </div>
+
           <div className="spotlight-footer">
             <div className="spotlight-meta">
               <span className="spotlight-meta-label">Program</span>
