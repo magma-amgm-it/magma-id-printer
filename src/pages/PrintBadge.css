@@ -926,7 +926,8 @@
    The client Marketing card (no modifier) keeps the dark-purple look.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Lighter overlay so the building reads as a real architectural backdrop */
+/* Lighter overlay so the building reads as a real architectural backdrop.
+   Just enough purple tint near the bottom to keep text legible. */
 .template-marketing.marketing-employee .marketing-bg img {
   opacity: 1;
   filter: blur(0.15mm);
@@ -934,18 +935,15 @@
 
 .template-marketing.marketing-employee .marketing-bg::after {
   background: linear-gradient(180deg,
-    rgba(45, 35, 75, 0.25) 0%,
-    rgba(45, 35, 75, 0.35) 55%,
-    rgba(45, 35, 75, 0.75) 100%
+    rgba(45, 35, 75, 0.18) 0%,
+    rgba(45, 35, 75, 0.22) 60%,
+    rgba(45, 35, 75, 0.45) 100%
   );
 }
 
-/* 3-row grid: logo top, photo+name centered, footer bottom */
-.template-marketing.marketing-employee {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-
+/* Inside the content area, push the photo+name group toward optical
+   center. Logo sticks to the top, photo gets a big top margin, then
+   name follows with a small gap. Footer keeps its natural ~7mm height. */
 .template-marketing.marketing-employee .marketing-content {
   display: flex;
   flex-direction: column;
@@ -953,6 +951,7 @@
   justify-content: flex-start;
   padding: 4mm 4mm 0;
   gap: 0;
+  margin-top: 0;
 }
 
 /* Logo — no pill chip, white version sits clean on the building */
@@ -968,10 +967,10 @@
 
 /* Photo pushed down toward optical center */
 .template-marketing.marketing-employee .marketing-photo {
-  margin-top: 9mm;
+  margin-top: 16mm;
 }
 
-/* Name dropped down clearly below the photo */
+/* Name dropped clearly below the photo */
 .template-marketing.marketing-employee .marketing-name {
   margin-top: 5mm;
   font-size: 5.2mm;
