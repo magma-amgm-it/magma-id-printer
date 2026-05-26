@@ -716,8 +716,8 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
             </div>
           )}
         </div>
-        <img src={logoTight} alt="MAGMA AMGM" className="portrait-logo" />
         <div className="portrait-panel">
+          <img src={logoTight} alt="MAGMA AMGM" className="portrait-logo" />
           <div className="portrait-name" style={{ fontSize: `${nameSize}mm` }}>
             <span className="portrait-name-line">{fullName}</span>
           </div>

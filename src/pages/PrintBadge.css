@@ -1384,15 +1384,17 @@
 
 /* Logo sits over the photo, top-left */
 .template-portrait .portrait-logo {
-  position: absolute;
-  top: 3.5mm;
-  left: 4mm;
-  height: 7mm;
-  width: auto;
-  max-width: 34mm;
-  object-fit: contain;
-  object-position: left center;
+  position: relative;
   z-index: 2;
+  height: 6.5mm;
+  width: auto;
+  max-width: 30mm;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  margin-top: auto;       /* pushes the logo (and everything below) to bottom */
+  margin-bottom: 1.5mm;
+  flex-shrink: 0;
 }
 
 /* Purple panel — curved (concave) top edge bulging into the photo */
@@ -1401,7 +1403,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 26mm;
+  height: 33mm;
   background: #2a2654;
   border-radius: 26.99mm 26.99mm 0 0 / 3mm 3mm 0 0;
   z-index: 1;
@@ -1409,6 +1411,7 @@
   padding: 4mm 4.5mm 3.5mm;
   display: flex;
   flex-direction: column;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -1437,7 +1440,6 @@
   font-size: 5.2mm;
   max-height: 9mm;
   overflow: hidden;
-  margin-top: auto;       /* push down so it sits just above the coral accent */
   margin-bottom: 1.5mm;
 }
 
