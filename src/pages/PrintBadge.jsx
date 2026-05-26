@@ -655,14 +655,11 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   }
 
   // Portrait: vertical card, photo on top, curved purple panel below.
-  // Fields: name, staff type, employee ID (no job title).
+  // Fields: name (single line, centered) + employee ID (centered).
   if (template === 'portrait') {
-    const pFirst = employee.firstName || fullName.split(' ')[0] || ''
-    const pLast =
-      employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
-    const longest = Math.max(pFirst.length, pLast.length, 1)
+    const nameLen = fullName.length || 1
     const nameSize =
-      longest <= 10 ? 5.2 : longest <= 13 ? 4.4 : longest <= 16 ? 3.7 : 3.2
+      nameLen <= 14 ? 5.2 : nameLen <= 18 ? 4.4 : nameLen <= 22 ? 3.7 : 3.2
     const logoTight = import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
 
     return (
@@ -679,15 +676,9 @@ function BadgeCard({ template, employee, photoDataUrl }) {
         <img src={logoTight} alt="MAGMA AMGM" className="portrait-logo" />
         <div className="portrait-panel">
           <div className="portrait-name" style={{ fontSize: `${nameSize}mm` }}>
-            <span className="portrait-name-line">{pFirst}</span>
-            {pLast && <span className="portrait-name-line">{pLast}</span>}
+            <span className="portrait-name-line">{fullName}</span>
           </div>
-          <div className="portrait-accent" />
           <div className="portrait-footer">
-            <div className="portrait-meta">
-              <span className="portrait-meta-label">Staff Type</span>
-              <span className="portrait-meta-value">{staffType}</span>
-            </div>
             <div className="portrait-meta">
               <span className="portrait-meta-label">Employee ID</span>
               <span className="portrait-meta-value">{employeeId}</span>

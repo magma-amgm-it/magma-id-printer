@@ -1433,40 +1433,32 @@
 .template-portrait .portrait-name {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  text-align: center;
   font-size: 5.2mm;
-  max-height: 16mm;
+  max-height: 9mm;
   overflow: hidden;
+  margin-top: auto;       /* push down so it sits right above the grey divider */
+  margin-bottom: 2.5mm;
 }
 
 .template-portrait .portrait-name-line {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: inherit;
   font-weight: 500;
-  line-height: 1.05;
+  line-height: 1.1;
   color: #ffffff;
-  overflow-wrap: anywhere;
-}
-
-.template-portrait .portrait-accent {
-  position: relative;
-  z-index: 1;
-  width: 8mm;
-  height: 0.8mm;
-  background: #e27580;
-  border-radius: 0.4mm;
-  margin-top: 2.2mm;
-  flex-shrink: 0;
+  white-space: nowrap;    /* keep it on a single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .template-portrait .portrait-footer {
   position: relative;
   z-index: 1;
-  margin-top: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 3mm;
+  grid-template-columns: 1fr;
+  justify-items: center;
   border-top: 0.3mm solid rgba(255, 255, 255, 0.18);
   padding-top: 2.6mm;
 }
@@ -1474,8 +1466,10 @@
 .template-portrait .portrait-meta {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.8mm;
   min-width: 0;
+  text-align: center;
 }
 
 .template-portrait .portrait-meta-label {
