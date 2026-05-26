@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, ChevronDown, X, User
+  AlertCircle, ChevronDown, X, User, Crosshair
 } from 'lucide-react'
+import FocalPointPicker from '../components/FocalPointPicker'
 import Webcam from 'react-webcam'
 import toast from 'react-hot-toast'
 import {
@@ -36,11 +37,34 @@ export default function PrintBadge() {
   // 'premium' | 'branded' | 'clean' | 'marketing' | 'spotlight' | 'mirror' | 'portrait'
   const [template, setTemplate] = useState('premium')
 
+  // Focal point picker — per-employee, stored in localStorage
+  const [photoFocus, setPhotoFocus] = useState({ x: 50, y: 30 })
+  const [showFocalPicker, setShowFocalPicker] = useState(false)
+
   useEffect(() => {
     if (employeeId) {
       loadEmployee(employeeId)
+      // Restore saved focal point for this employee
+      try {
+        const saved = localStorage.getItem(`photoFocus_emp_${employeeId}`)
+        setPhotoFocus(saved ? JSON.parse(saved) : { x: 50, y: 30 })
+      } catch {
+        setPhotoFocus({ x: 50, y: 30 })
+      }
     }
   }, [employeeId])
+
+  function handleSaveFocus(focus) {
+    setPhotoFocus(focus)
+    try {
+      localStorage.setItem(
+        `photoFocus_emp_${employee.employeeId}`,
+        JSON.stringify(focus),
+      )
+    } catch {}
+    setShowFocalPicker(false)
+    toast.success('Photo position saved')
+  }
 
   async function loadEmployee(id) {
     try {
@@ -283,6 +307,9 @@ export default function PrintBadge() {
                     <button className="btn btn-ghost btn-sm" onClick={() => fileInputRef.current?.click()}>
                       <Upload size={14} /> Upload New
                     </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setShowFocalPicker(true)}>
+                      <Crosshair size={14} /> Adjust position
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -358,6 +385,7 @@ export default function PrintBadge() {
                 template={template}
                 employee={employee}
                 photoDataUrl={photoDataUrl}
+                photoFocus={photoFocus}
               />
             </div>
 
@@ -380,10 +408,23 @@ export default function PrintBadge() {
               template={template}
               employee={employee}
               photoDataUrl={photoDataUrl}
+              photoFocus={photoFocus}
             />
           </div>
         )}
       </div>
+
+      {/* Focal point picker modal */}
+      <AnimatePresence>
+        {showFocalPicker && photoDataUrl && (
+          <FocalPointPicker
+            photoUrl={photoDataUrl}
+            value={photoFocus}
+            onChange={handleSaveFocus}
+            onClose={() => setShowFocalPicker(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Print Modal */}
       <AnimatePresence>
@@ -445,12 +486,14 @@ export default function PrintBadge() {
   )
 }
 
-function BadgeCard({ template, employee, photoDataUrl }) {
+function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
   const staffType = employee.department || 'MAGMA'
   const employeeId = employee.badgeNumber || employee.employeeId
+  const focus = photoFocus || { x: 50, y: 30 }
+  const cardStyle = { '--photo-focus': `${focus.x}% ${focus.y}%` }
   const fullName = `${employee.lastName} ${employee.firstName}`.trim()
 
   const photoEl = (
@@ -488,7 +531,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   // Branded: [NAVY HEADER with logo] [photo left | title+fields right] [COLORFUL FOOTER]
   if (template === 'branded') {
     return (
-      <div className="badge-card template-branded">
+      <div className="badge-card template-branded" style={cardStyle}>
         <div className="branded-header">
           <img src={logoWhiteSrc} alt="MAGMA" className="branded-header-logo" />
         </div>
@@ -513,7 +556,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   // Marketing: vertical portrait with building bg, circular photo, purple footer
   if (template === 'marketing') {
     return (
-      <div className="badge-card template-marketing marketing-employee">
+      <div className="badge-card template-marketing marketing-employee" style={cardStyle}>
         <div className="marketing-bg">
           <img src={buildingSrc} alt="" />
         </div>
@@ -558,7 +601,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
       : 4.0
 
     return (
-      <div className="badge-card template-spotlight">
+      <div className="badge-card template-spotlight" style={cardStyle}>
         {/* Photo — curved left edge, anchored to the right */}
         <div className="spotlight-photo">
           {photoDataUrl ? (
@@ -622,7 +665,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     const logoTight = import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
 
     return (
-      <div className="badge-card template-mirror">
+      <div className="badge-card template-mirror" style={cardStyle}>
         <div className="mirror-photo">
           {photoDataUrl ? (
             <img src={photoDataUrl} alt="" />
@@ -663,7 +706,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
     const logoTight = import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
 
     return (
-      <div className="badge-card template-portrait">
+      <div className="badge-card template-portrait" style={cardStyle}>
         <div className="portrait-photo">
           {photoDataUrl ? (
             <img src={photoDataUrl} alt="" />
@@ -691,7 +734,7 @@ function BadgeCard({ template, employee, photoDataUrl }) {
 
   // Premium & Clean: [photo] [fields with logo] (+ building bg for premium)
   return (
-    <div className={`badge-card template-${template}`}>
+    <div className={`badge-card template-${template}`} style={cardStyle}>
       {template === 'premium' && (
         <div className="badge-bg-image">
           <img src={buildingSrc} alt="" />

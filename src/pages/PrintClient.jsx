@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, X, User, Pencil
+  AlertCircle, X, User, Pencil, Crosshair
 } from 'lucide-react'
+import FocalPointPicker from '../components/FocalPointPicker'
 import Webcam from 'react-webcam'
 import toast from 'react-hot-toast'
 import {
@@ -38,9 +39,33 @@ export default function PrintClient() {
   const [editForm, setEditForm] = useState({ firstName: '', lastName: '', program: '', startDate: '' })
   const [savingEdit, setSavingEdit] = useState(false)
 
+  // Focal point picker — per-client, stored in localStorage
+  const [photoFocus, setPhotoFocus] = useState({ x: 50, y: 30 })
+  const [showFocalPicker, setShowFocalPicker] = useState(false)
+
   useEffect(() => {
-    if (clientId) loadClient(clientId)
+    if (clientId) {
+      loadClient(clientId)
+      try {
+        const saved = localStorage.getItem(`photoFocus_client_${clientId}`)
+        setPhotoFocus(saved ? JSON.parse(saved) : { x: 50, y: 30 })
+      } catch {
+        setPhotoFocus({ x: 50, y: 30 })
+      }
+    }
   }, [clientId])
+
+  function handleSaveFocus(focus) {
+    setPhotoFocus(focus)
+    try {
+      localStorage.setItem(
+        `photoFocus_client_${client.clientId}`,
+        JSON.stringify(focus),
+      )
+    } catch {}
+    setShowFocalPicker(false)
+    toast.success('Photo position saved')
+  }
 
   async function loadClient(id) {
     try {
@@ -302,6 +327,9 @@ export default function PrintClient() {
                     <button className="btn btn-ghost btn-sm" onClick={() => fileInputRef.current?.click()}>
                       <Upload size={14} /> Upload New
                     </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setShowFocalPicker(true)}>
+                      <Crosshair size={14} /> Adjust position
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -404,6 +432,7 @@ export default function PrintClient() {
                 template={template}
                 client={client}
                 photoDataUrl={photoDataUrl}
+                photoFocus={photoFocus}
               />
             </div>
 
@@ -426,10 +455,23 @@ export default function PrintClient() {
               template={template}
               client={client}
               photoDataUrl={photoDataUrl}
+              photoFocus={photoFocus}
             />
           </div>
         )}
       </div>
+
+      {/* Focal point picker modal */}
+      <AnimatePresence>
+        {showFocalPicker && photoDataUrl && (
+          <FocalPointPicker
+            photoUrl={photoDataUrl}
+            value={photoFocus}
+            onChange={handleSaveFocus}
+            onClose={() => setShowFocalPicker(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Edit Client Modal */}
       <AnimatePresence>
@@ -569,10 +611,12 @@ export default function PrintClient() {
   )
 }
 
-function ClientCard({ template, client, photoDataUrl }) {
+function ClientCard({ template, client, photoDataUrl, photoFocus }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
+  const focus = photoFocus || { x: 50, y: 30 }
+  const cardStyle = { '--photo-focus': `${focus.x}% ${focus.y}%` }
   const fullName = `${client.lastName} ${client.firstName}`.trim()
   const program = client.program || ''
   const expiryDate = client.startDate
@@ -627,7 +671,7 @@ function ClientCard({ template, client, photoDataUrl }) {
       : 4.0
 
     return (
-      <div className="badge-card template-spotlight">
+      <div className="badge-card template-spotlight" style={cardStyle}>
         <div className="spotlight-photo">
           {photoDataUrl ? (
             <img src={photoDataUrl} alt="" />
@@ -691,7 +735,7 @@ function ClientCard({ template, client, photoDataUrl }) {
   // Branded: [NAVY HEADER with logo] [photo left | title+fields right] [COLORFUL FOOTER]
   if (template === 'branded') {
     return (
-      <div className="badge-card template-branded">
+      <div className="badge-card template-branded" style={cardStyle}>
         <div className="branded-header">
           <img src={logoWhiteSrc} alt="MAGMA" className="branded-header-logo" />
         </div>
@@ -716,7 +760,7 @@ function ClientCard({ template, client, photoDataUrl }) {
   // Marketing: vertical portrait with building bg, circular photo, purple footer
   if (template === 'marketing') {
     return (
-      <div className="badge-card template-marketing">
+      <div className="badge-card template-marketing" style={cardStyle}>
         <div className="marketing-bg">
           <img src={buildingSrc} alt="" />
         </div>
@@ -743,7 +787,7 @@ function ClientCard({ template, client, photoDataUrl }) {
 
   // Premium & Clean: [photo] [fields with logo] (+ building bg for premium)
   return (
-    <div className={`badge-card template-${template}`}>
+    <div className={`badge-card template-${template}`} style={cardStyle}>
       {template === 'premium' && (
         <div className="badge-bg-image">
           <img src={buildingSrc} alt="" />
