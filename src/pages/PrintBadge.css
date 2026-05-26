@@ -1449,7 +1449,7 @@
   height: 0.8mm;
   background: #e27580;
   border-radius: 0.4mm;
-  margin: 0 auto 2mm;
+  margin: 0 auto 1mm;
   flex-shrink: 0;
 }
 
@@ -1470,7 +1470,7 @@
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
-  padding-top: 2.6mm;
+  padding-top: 1.3mm;
 }
 
 .template-portrait .portrait-meta {
