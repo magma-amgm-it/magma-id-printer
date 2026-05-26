@@ -935,9 +935,9 @@
 
 .template-marketing.marketing-employee .marketing-bg::after {
   background: linear-gradient(180deg,
-    rgba(45, 35, 75, 0.18) 0%,
-    rgba(45, 35, 75, 0.22) 60%,
-    rgba(45, 35, 75, 0.45) 100%
+    rgba(45, 35, 75, 0.08) 0%,
+    rgba(45, 35, 75, 0.12) 60%,
+    rgba(45, 35, 75, 0.32) 100%
   );
 }
 
