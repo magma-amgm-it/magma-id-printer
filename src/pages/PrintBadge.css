@@ -786,9 +786,13 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  /* Subtle outer shadow + inner highlight so the card feels physical */
+  box-shadow:
+    inset 0 0.3mm 0 rgba(255, 255, 255, 0.08),
+    0 1mm 3mm rgba(0, 0, 0, 0.18);
 }
 
-/* Full background image */
+/* Background image — heavy dark purple wash so foreground reads cleanly */
 .template-marketing .marketing-bg {
   position: absolute;
   inset: 0;
@@ -801,24 +805,22 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.6;
-  filter: blur(0.2mm);
+  opacity: 0.35;
+  filter: blur(0.3mm);
 }
 
-/* Light wash overlay — building visible but not overpowering */
 .template-marketing .marketing-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(230, 230, 240, 0.5) 0%,
-    rgba(230, 230, 240, 0.4) 40%,
-    rgba(220, 220, 235, 0.45) 70%,
-    rgba(72, 68, 113, 0.35) 100%
+    rgba(20, 18, 48, 0.78) 0%,
+    rgba(44, 40, 92, 0.72) 50%,
+    rgba(72, 68, 113, 0.78) 100%
   );
 }
 
-/* Content sits above background */
+/* Content sits above background — clear vertical rhythm */
 .template-marketing .marketing-content {
   position: relative;
   z-index: 1;
@@ -826,32 +828,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 3mm;
-  margin-top: -2mm;
+  justify-content: flex-start;
+  padding: 5mm 4mm 4mm;
+  gap: 4mm;
 }
 
-/* Logo at top center */
+/* Logo: small white pill chip so the colored mark reads on dark bg */
 .template-marketing .marketing-logo {
-  height: 12mm;
+  height: 8mm;
   width: auto;
   object-fit: contain;
-  margin-bottom: 2mm;
-  margin-top: -4mm;
-  mix-blend-mode: multiply;
+  background: #ffffff;
+  border-radius: 1.4mm;
+  padding: 1mm 2mm;
+  box-shadow: 0 0.3mm 1mm rgba(0, 0, 0, 0.15);
 }
 
-/* Circular photo */
+/* Photo: rounded square, thin white border, soft shadow */
 .template-marketing .marketing-photo {
   width: 26mm;
   height: 26mm;
-  border-radius: 1.5mm;
+  border-radius: 2mm;
   overflow: hidden;
-  border: 0.5mm solid #ffffff;
-  box-shadow: none;
+  border: 0.3mm solid #ffffff;
+  box-shadow: 0 1mm 3mm rgba(0, 0, 0, 0.25);
   background: transparent;
   flex-shrink: 0;
-  margin-bottom: 3mm;
+  margin-top: 2mm;
 }
 
 .template-marketing .marketing-photo img {
@@ -869,28 +872,32 @@
   color: rgba(255, 255, 255, 0.3);
 }
 
-/* Name */
+/* Name — clean sans-serif, semibold, white */
 .template-marketing .marketing-name {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 5mm;
-  font-weight: 700;
-  color: #2c3053;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 4.8mm;
+  font-weight: 600;
+  color: #ffffff;
   text-align: center;
-  line-height: 1.1;
-  letter-spacing: 0.02mm;
-  margin-bottom: 1mm;
+  line-height: 1.15;
+  letter-spacing: -0.02mm;
+  margin-top: 1mm;
 }
 
-/* Staff type / role (still used by client marketing template for Program) */
+/* Role (used by client marketing template for Program) — small caps,
+   light weight, letter-spaced uppercase per the corporate-badge brief */
 .template-marketing .marketing-role {
-  font-size: 2.5mm;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 2.4mm;
   font-weight: 500;
-  color: #484471;
+  color: rgba(255, 255, 255, 0.75);
   text-align: center;
   line-height: 1.3;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-/* Purple footer bar */
+/* Purple footer bar with thin white accent line above */
 .template-marketing .marketing-footer {
   position: relative;
   z-index: 1;
@@ -901,14 +908,16 @@
   justify-content: center;
   min-height: 7mm;
   border-radius: 0 0 3.18mm 3.18mm;
+  border-top: 0.15mm solid rgba(255, 255, 255, 0.2);
 }
 
 .template-marketing .marketing-footer-text {
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
   font-size: 2.8mm;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.5mm;
+  letter-spacing: 0.4mm;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Hide unused generic elements */
@@ -1607,8 +1616,8 @@
 
   /* KEEP border-radius on photo and inner elements */
   .marketing-photo {
-    border-radius: 1.5mm !important;
-    box-shadow: none !important;
+    border-radius: 2mm !important;
+    box-shadow: 0 1mm 3mm rgba(0, 0, 0, 0.25) !important;
     background: transparent !important;
   }
 
@@ -1643,8 +1652,7 @@
     print-color-adjust: exact !important;
   }
 
-  /* Remove any shadow/bg that could show as grey box */
-  .marketing-logo,
+  /* Remove any shadow/bg that could show as grey box on non-marketing */
   .marketing-content,
   .badge-fields-logo,
   .marketing-name,
@@ -1653,12 +1661,11 @@
     background: transparent !important;
   }
 
-  /* Make the logo area clip cleanly — no grey box behind PNG */
+  /* Marketing logo: keep the white pill chip on print so the colored
+     logo stays legible against the dark purple wash */
   .template-marketing .marketing-logo {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    filter: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
 
