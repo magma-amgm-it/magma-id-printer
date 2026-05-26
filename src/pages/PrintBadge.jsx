@@ -678,9 +678,9 @@ function BadgeCard({ template, employee, photoDataUrl }) {
           <div className="portrait-name" style={{ fontSize: `${nameSize}mm` }}>
             <span className="portrait-name-line">{fullName}</span>
           </div>
+          <div className="portrait-accent" />
           <div className="portrait-footer">
             <div className="portrait-meta">
-              <span className="portrait-meta-label">Employee ID</span>
               <span className="portrait-meta-value">{employeeId}</span>
             </div>
           </div>

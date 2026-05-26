@@ -1438,8 +1438,19 @@
   font-size: 5.2mm;
   max-height: 9mm;
   overflow: hidden;
-  margin-top: auto;       /* push down so it sits right above the grey divider */
-  margin-bottom: 2.5mm;
+  margin-top: auto;       /* push down so it sits just above the coral accent */
+  margin-bottom: 1.5mm;
+}
+
+.template-portrait .portrait-accent {
+  position: relative;
+  z-index: 1;
+  width: 10mm;
+  height: 0.8mm;
+  background: #e27580;
+  border-radius: 0.4mm;
+  margin: 0 auto 2mm;
+  flex-shrink: 0;
 }
 
 .template-portrait .portrait-name-line {
@@ -1459,7 +1470,6 @@
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
-  border-top: 0.3mm solid rgba(255, 255, 255, 0.18);
   padding-top: 2.6mm;
 }
 
