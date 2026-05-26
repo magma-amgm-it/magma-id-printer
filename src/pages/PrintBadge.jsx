@@ -513,12 +513,16 @@ function BadgeCard({ template, employee, photoDataUrl }) {
   // Marketing: vertical portrait with building bg, circular photo, purple footer
   if (template === 'marketing') {
     return (
-      <div className="badge-card template-marketing">
+      <div className="badge-card template-marketing marketing-employee">
         <div className="marketing-bg">
           <img src={buildingSrc} alt="" />
         </div>
         <div className="marketing-content">
-          <img src={logoSrc} alt="MAGMA" className="marketing-logo" />
+          <img
+            src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
+            alt="MAGMA AMGM"
+            className="marketing-logo"
+          />
           <div className="marketing-photo">
             {photoDataUrl ? (
               <img src={photoDataUrl} alt="" />

@@ -920,6 +920,65 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   EMPLOYEE MARKETING VARIANT — refinements scoped via .marketing-employee
+   Building visible as backdrop, 3-row grid layout, no logo chip.
+   The client Marketing card (no modifier) keeps the dark-purple look.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Lighter overlay so the building reads as a real architectural backdrop */
+.template-marketing.marketing-employee .marketing-bg img {
+  opacity: 1;
+  filter: blur(0.15mm);
+}
+
+.template-marketing.marketing-employee .marketing-bg::after {
+  background: linear-gradient(180deg,
+    rgba(45, 35, 75, 0.25) 0%,
+    rgba(45, 35, 75, 0.35) 55%,
+    rgba(45, 35, 75, 0.75) 100%
+  );
+}
+
+/* 3-row grid: logo top, photo+name centered, footer bottom */
+.template-marketing.marketing-employee {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.template-marketing.marketing-employee .marketing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4mm 4mm 0;
+  gap: 0;
+}
+
+/* Logo — no pill chip, white version sits clean on the building */
+.template-marketing.marketing-employee .marketing-logo {
+  height: 8.5mm;
+  width: auto;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+/* Photo pushed down toward optical center */
+.template-marketing.marketing-employee .marketing-photo {
+  margin-top: 9mm;
+}
+
+/* Name dropped down clearly below the photo */
+.template-marketing.marketing-employee .marketing-name {
+  margin-top: 5mm;
+  font-size: 5.2mm;
+  font-weight: 600;
+  letter-spacing: -0.04mm;
+}
+
 /* Hide unused generic elements */
 .template-marketing .badge-header-bar { display: none; }
 .template-marketing .badge-body-area { display: none; }
@@ -1661,9 +1720,23 @@
     background: transparent !important;
   }
 
-  /* Marketing logo: keep the white pill chip on print so the colored
-     logo stays legible against the dark purple wash */
+  /* Marketing logo: client variant keeps its white chip, employee
+     variant uses the white-tight PNG and sits transparently */
   .template-marketing .marketing-logo {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .template-marketing.marketing-employee .marketing-logo {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Building backdrop: preserve the photo + overlay on print */
+  .template-marketing.marketing-employee .marketing-bg,
+  .template-marketing.marketing-employee .marketing-bg::after {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
