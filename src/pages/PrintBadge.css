@@ -845,7 +845,7 @@
 .template-marketing .marketing-photo {
   width: 26mm;
   height: 26mm;
-  border-radius: 50%;
+  border-radius: 1.5mm;
   overflow: hidden;
   border: 0.5mm solid #ffffff;
   box-shadow: none;
@@ -871,15 +871,17 @@
 
 /* Name */
 .template-marketing .marketing-name {
-  font-size: 4mm;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 5mm;
   font-weight: 700;
   color: #2c3053;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: 0.02mm;
   margin-bottom: 1mm;
 }
 
-/* Staff type / role */
+/* Staff type / role (still used by client marketing template for Program) */
 .template-marketing .marketing-role {
   font-size: 2.5mm;
   font-weight: 500;
@@ -1603,9 +1605,9 @@
     border-radius: 0 !important;
   }
 
-  /* KEEP border-radius on photo circles and inner elements */
+  /* KEEP border-radius on photo and inner elements */
   .marketing-photo {
-    border-radius: 50% !important;
+    border-radius: 1.5mm !important;
     box-shadow: none !important;
     background: transparent !important;
   }

@@ -529,7 +529,6 @@ function BadgeCard({ template, employee, photoDataUrl }) {
             )}
           </div>
           <div className="marketing-name">{fullName}</div>
-          <div className="marketing-role">{staffType}</div>
         </div>
         <div className="marketing-footer">
           <span className="marketing-footer-text">{employeeId}</span>
