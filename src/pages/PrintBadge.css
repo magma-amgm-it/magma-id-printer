@@ -1941,9 +1941,9 @@
    If we ever swap back, this class alone gives the right look. */
 .template-studio .studio-logo {
   position: absolute;
-  top: 2.8mm;
+  top: 2.5mm;
   left: 0.25mm;
-  height: 4.8mm;
+  height: 6mm;
   width: auto;
   z-index: 2;
 }
