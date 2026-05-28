@@ -1852,11 +1852,11 @@
   color: rgba(42, 38, 84, 0.3);
 }
 
-/* Bottom: cream editorial panel */
+/* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
   flex: 0 0 32mm;
-  background: #f7f1e3;
+  background: #ffffff;
   padding: 3mm 5mm 2.8mm 3.5mm;
   display: flex;
   flex-direction: column;
@@ -1899,13 +1899,15 @@
   letter-spacing: 0.02mm;
 }
 
-/* Vertical tagline along the right edge of the cream panel */
+/* Vertical tagline along the right edge — reads bottom-to-top
+   ("Learn" at the bottom, "Settle." at the top) */
 .template-studio .studio-tagline {
   position: absolute;
   right: 1.8mm;
   top: 2mm;
   bottom: 4mm;
   writing-mode: vertical-rl;
+  transform: rotate(180deg);
   font-size: 1.9mm;
   font-weight: 500;
   color: #2a2654;
