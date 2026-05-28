@@ -1830,6 +1830,54 @@
   accent-color: #2a2654;
 }
 
+/* ───── Background mode picker (None / Purple / White) ───── */
+.bg-mode-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: rgba(42, 38, 84, 0.06);
+  border-radius: 6px;
+}
+
+.bg-mode-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b6478);
+  padding: 0 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.bg-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: var(--text-primary, #2a2654);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bg-mode-btn:hover:not(:disabled) {
+  background: rgba(42, 38, 84, 0.08);
+}
+
+.bg-mode-btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.bg-mode-btn.active {
+  background: #2a2654;
+  color: #ffffff;
+}
+
 /* ───── Purple shade slider (inline next to the toggle button) ───── */
 .purple-shade-row {
   display: flex;
@@ -1917,13 +1965,18 @@
 }
 
 /* When the user has replaced the photo background, the cutout PNG
-   sits on top of this deep brand purple. object-fit becomes contain
-   so the full subject is visible inside the purple field. */
+   sits on top of either brand purple or pure white. object-fit
+   becomes contain so the full subject is visible inside the field. */
 .template-studio .studio-photo--purple-bg {
   background: #2a2654;
 }
 
-.template-studio .studio-photo--purple-bg img {
+.template-studio .studio-photo--white-bg {
+  background: #ffffff;
+}
+
+.template-studio .studio-photo--purple-bg img,
+.template-studio .studio-photo--white-bg img {
   object-fit: contain;
   object-position: center bottom;
 }
@@ -1953,6 +2006,7 @@
   flex-direction: column;
   line-height: 0.96;
   color: #ee8a26;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   font-size: 6mm;
   letter-spacing: -0.05mm;

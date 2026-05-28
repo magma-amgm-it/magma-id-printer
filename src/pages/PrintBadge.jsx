@@ -44,9 +44,9 @@ export default function PrintBadge() {
 
   // Background removal (Studio templates only)
   // cutoutUrl = cached transparent-background version of the current photo.
-  // purpleBg  = toggle on/off. Resets when photo or employee changes.
+  // bgMode    = 'none' | 'purple' | 'white'. Resets when photo changes.
   const [cutoutUrl, setCutoutUrl] = useState(null)
-  const [purpleBg, setPurpleBg] = useState(false)
+  const [bgMode, setBgMode] = useState('none')
   const [isProcessingBg, setIsProcessingBg] = useState(false)
   // 0 = lightest lavender, 100 = deepest brand purple. Default 70.
   const [purpleShade, setPurpleShade] = useState(70)
@@ -82,7 +82,7 @@ export default function PrintBadge() {
   // Reset the cutout whenever the photo changes (retake / upload / new emp).
   useEffect(() => {
     setCutoutUrl(null)
-    setPurpleBg(false)
+    setBgMode('none')
   }, [photoDataUrl])
 
   function handleCropSave(croppedUrl) {
@@ -100,19 +100,19 @@ export default function PrintBadge() {
     return `rgb(${r}, ${g}, ${b})`
   }
 
-  async function togglePurpleBackground() {
+  async function selectBgMode(mode) {
     if (!photoDataUrl) return
-    // Turning OFF — no processing needed.
-    if (purpleBg) {
-      setPurpleBg(false)
+    // Turning off — no processing needed.
+    if (mode === 'none') {
+      setBgMode('none')
       return
     }
-    // Already processed — just flip on.
+    // Already processed — just flip mode.
     if (cutoutUrl) {
-      setPurpleBg(true)
+      setBgMode(mode)
       return
     }
-    // First time — lazy-load the model, process, cache.
+    // First time on this photo — lazy-load the model and process.
     setIsProcessingBg(true)
     const t = toast.loading('Removing background… (first run downloads the model, ~30MB)')
     try {
@@ -120,7 +120,7 @@ export default function PrintBadge() {
       const blob = await removeBackground(photoDataUrl)
       const url = URL.createObjectURL(blob)
       setCutoutUrl(url)
-      setPurpleBg(true)
+      setBgMode(mode)
       toast.success('Background replaced', { id: t })
     } catch (err) {
       console.error('Background removal failed:', err)
@@ -378,21 +378,35 @@ export default function PrintBadge() {
                       <Crop size={14} /> Crop
                     </button>
                     {(template === 'studio' || template === 'studio2') && (
-                      <button
-                        className={`btn btn-ghost btn-sm${purpleBg ? ' btn-active' : ''}`}
-                        onClick={togglePurpleBackground}
-                        disabled={isProcessingBg}
-                      >
-                        <Wand2 size={14} />
-                        {isProcessingBg
-                          ? 'Processing…'
-                          : purpleBg
-                          ? 'Purple bg: ON'
-                          : 'Purple background'}
-                      </button>
+                      <div className="bg-mode-picker">
+                        <span className="bg-mode-label">
+                          <Wand2 size={11} style={{ verticalAlign: '-1px' }} /> Bg
+                        </span>
+                        <button
+                          className={`bg-mode-btn${bgMode === 'none' ? ' active' : ''}`}
+                          onClick={() => selectBgMode('none')}
+                          disabled={isProcessingBg}
+                        >
+                          Original
+                        </button>
+                        <button
+                          className={`bg-mode-btn${bgMode === 'purple' ? ' active' : ''}`}
+                          onClick={() => selectBgMode('purple')}
+                          disabled={isProcessingBg}
+                        >
+                          {isProcessingBg && bgMode !== 'purple' ? '…' : 'Purple'}
+                        </button>
+                        <button
+                          className={`bg-mode-btn${bgMode === 'white' ? ' active' : ''}`}
+                          onClick={() => selectBgMode('white')}
+                          disabled={isProcessingBg}
+                        >
+                          {isProcessingBg && bgMode !== 'white' ? '…' : 'White'}
+                        </button>
+                      </div>
                     )}
                   </div>
-                  {purpleBg && (template === 'studio' || template === 'studio2') && (
+                  {bgMode === 'purple' && (template === 'studio' || template === 'studio2') && (
                     <div className="purple-shade-row">
                       <span className="purple-shade-label">Shade</span>
                       <input
@@ -488,7 +502,7 @@ export default function PrintBadge() {
                 photoDataUrl={photoDataUrl}
                 photoFocus={photoFocus}
                 cutoutUrl={cutoutUrl}
-                purpleBg={purpleBg}
+                bgMode={bgMode}
                 purpleBgColor={shadeToColor(purpleShade)}
               />
             </div>
@@ -514,7 +528,8 @@ export default function PrintBadge() {
               photoDataUrl={photoDataUrl}
               photoFocus={photoFocus}
               cutoutUrl={cutoutUrl}
-              purpleBg={purpleBg}
+              bgMode={bgMode}
+              purpleBgColor={shadeToColor(purpleShade)}
             />
           </div>
         )}
@@ -604,7 +619,7 @@ export default function PrintBadge() {
   )
 }
 
-function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, purpleBg, purpleBgColor }) {
+function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bgMode, purpleBgColor }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
@@ -863,8 +878,18 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, pu
     const studioLogoSrc = isWhiteLogo
       ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
       : logoSrc
-    const showPurpleBg = purpleBg && cutoutUrl
-    const photoSrc = showPurpleBg ? cutoutUrl : photoDataUrl
+    const bgActive = (bgMode === 'purple' || bgMode === 'white') && cutoutUrl
+    const photoSrc = bgActive ? cutoutUrl : photoDataUrl
+    const bgClass =
+      bgMode === 'purple' && bgActive
+        ? ' studio-photo--purple-bg'
+        : bgMode === 'white' && bgActive
+        ? ' studio-photo--white-bg'
+        : ''
+    const bgStyle =
+      bgMode === 'purple' && bgActive && purpleBgColor
+        ? { background: purpleBgColor }
+        : undefined
     return (
       <div className="badge-card template-studio" style={cardStyle}>
         <div className="studio-top">
@@ -874,8 +899,8 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, pu
             className={`studio-logo${isWhiteLogo ? ' studio-logo--white' : ''}`}
           />
           <div
-            className={`studio-photo${showPurpleBg ? ' studio-photo--purple-bg' : ''}`}
-            style={showPurpleBg && purpleBgColor ? { background: purpleBgColor } : undefined}
+            className={`studio-photo${bgClass}`}
+            style={bgStyle}
           >
             {photoSrc ? (
               <img src={photoSrc} alt="" />
