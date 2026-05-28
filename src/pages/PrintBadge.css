@@ -1796,6 +1796,161 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   STUDIO — editorial vertical card.
+   Top: light-grey area with logo top-left and a clean headshot.
+   Bottom: cream panel with big orange name, EMPLOYEE ID line,
+   tiny URL, vertical tagline on the right edge.
+   Foot: 4-segment colored stripe.
+   ═══════════════════════════════════════════════════════════════════ */
+.badge-card.template-studio {
+  width: 53.98mm;
+  height: 85.6mm;
+  background: #f3f1f1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Top area: photo + floating logo */
+.template-studio .studio-top {
+  position: relative;
+  flex: 1 1 auto;
+  background: #f3f1f1;
+  overflow: hidden;
+}
+
+.template-studio .studio-logo {
+  position: absolute;
+  top: 2.8mm;
+  left: 3mm;
+  height: 4.8mm;
+  width: auto;
+  z-index: 2;
+}
+
+.template-studio .studio-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.template-studio .studio-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.template-studio .studio-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6e2dd;
+  color: rgba(42, 38, 84, 0.3);
+}
+
+/* Bottom: cream editorial panel */
+.template-studio .studio-bottom {
+  position: relative;
+  flex: 0 0 32mm;
+  background: #f7f1e3;
+  padding: 3mm 5mm 2.8mm 3.5mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.template-studio .studio-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.96;
+  color: #ee8a26;
+  font-weight: 800;
+  font-size: 6mm;
+  letter-spacing: -0.05mm;
+  max-width: 41mm;       /* leaves room for the vertical tagline */
+}
+
+.template-studio .studio-name-line {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.template-studio .studio-id {
+  margin-top: 1.5mm;
+  font-size: 2.4mm;
+  font-weight: 400;
+  color: #2a2654;
+  letter-spacing: 0.02mm;
+}
+
+.template-studio .studio-id-value {
+  font-weight: 500;
+}
+
+.template-studio .studio-url {
+  margin-top: auto;
+  font-size: 1.7mm;
+  color: #6b6478;
+  letter-spacing: 0.02mm;
+}
+
+/* Vertical tagline along the right edge of the cream panel */
+.template-studio .studio-tagline {
+  position: absolute;
+  right: 1.8mm;
+  top: 2mm;
+  bottom: 4mm;
+  writing-mode: vertical-rl;
+  font-size: 1.9mm;
+  font-weight: 500;
+  color: #2a2654;
+  letter-spacing: 0.03mm;
+  display: flex;
+  align-items: center;
+}
+
+/* Colored stripe at the very bottom */
+.template-studio .studio-stripe {
+  flex: 0 0 1.6mm;
+  display: flex;
+  flex-direction: row;
+}
+
+.template-studio .studio-stripe-segment {
+  flex: 1;
+}
+
+.template-studio .seg-pink   { background: #e95c75; }
+.template-studio .seg-teal   { background: #14a08c; }
+.template-studio .seg-orange { background: #ee8a26; }
+.template-studio .seg-blue   { background: #2b6dd7; }
+
+/* Hide unused generic elements */
+.template-studio .badge-header-bar { display: none; }
+.template-studio .badge-body-area { display: none; }
+.template-studio .branded-header { display: none; }
+.template-studio .branded-body { display: none; }
+.template-studio .branded-footer { display: none; }
+.template-studio .marketing-bg { display: none; }
+.template-studio .marketing-content { display: none; }
+.template-studio .marketing-footer { display: none; }
+
+/* Print: preserve the colored stripe + cream panel */
+@media print {
+  .template-studio .studio-stripe,
+  .template-studio .studio-stripe-segment,
+  .template-studio .studio-bottom {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Focal-point system — user-chosen object-position for card photos.
    The .badge-card root sets `--photo-focus: X% Y%`, and every
    photo container's <img> reads it. Fallback "50% 30%" keeps faces
@@ -1805,7 +1960,8 @@
 .marketing-photo img,
 .spotlight-photo img,
 .mirror-photo img,
-.portrait-photo img {
+.portrait-photo img,
+.studio-photo img {
   object-position: var(--photo-focus, 50% 30%);
 }
 

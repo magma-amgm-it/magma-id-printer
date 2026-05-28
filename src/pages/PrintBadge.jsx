@@ -376,6 +376,7 @@ export default function PrintBadge() {
                 <option value="spotlight">Spotlight</option>
                 <option value="mirror">Mirror</option>
                 <option value="portrait">Portrait</option>
+                <option value="studio">Studio</option>
               </select>
               <ChevronDown size={16} className="template-select-icon" />
             </div>
@@ -727,6 +728,48 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
               <span className="portrait-meta-value">{employeeId}</span>
             </div>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Studio: editorial portrait. Logo top-left + clean photo, cream
+  // footer with big orange name, EMPLOYEE ID line, vertical tagline
+  // on the right edge, colored stripe at the bottom.
+  if (template === 'studio') {
+    const sFirst = employee.firstName || fullName.split(' ')[0] || ''
+    const sLast =
+      employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
+    return (
+      <div className="badge-card template-studio" style={cardStyle}>
+        <div className="studio-top">
+          <img src={logoSrc} alt="MAGMA AMGM" className="studio-logo" />
+          <div className="studio-photo">
+            {photoDataUrl ? (
+              <img src={photoDataUrl} alt="" />
+            ) : (
+              <div className="studio-photo-placeholder">
+                <User size={32} strokeWidth={1} />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="studio-bottom">
+          <div className="studio-name">
+            <span className="studio-name-line">{sFirst}</span>
+            {sLast && <span className="studio-name-line">{sLast}</span>}
+          </div>
+          <div className="studio-id">
+            EMPLOYEE ID: <span className="studio-id-value">{employeeId}</span>
+          </div>
+          <div className="studio-url">www.magma-amgm.org</div>
+          <div className="studio-tagline">Learn. Connect. Settle.</div>
+        </div>
+        <div className="studio-stripe">
+          <div className="studio-stripe-segment seg-pink" />
+          <div className="studio-stripe-segment seg-teal" />
+          <div className="studio-stripe-segment seg-orange" />
+          <div className="studio-stripe-segment seg-blue" />
         </div>
       </div>
     )
