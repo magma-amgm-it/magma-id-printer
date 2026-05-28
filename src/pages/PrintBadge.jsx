@@ -406,7 +406,7 @@ export default function PrintBadge() {
                       </div>
                     )}
                   </div>
-                  {bgMode === 'purple' && (template === 'studio' || template === 'studio2') && (
+                  {(template === 'studio' || (bgMode === 'purple' && template === 'studio2')) && (
                     <div className="purple-shade-row">
                       <span className="purple-shade-label">Shade</span>
                       <input
@@ -890,9 +890,12 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
       bgMode === 'purple' && bgActive && purpleBgColor
         ? { background: purpleBgColor }
         : undefined
+    // Studio (white logo) needs a purple header band so the white
+    // wordmark is legible. Studio 2 (colored logo) keeps the white band.
+    const topStyle = isWhiteLogo ? { background: purpleBgColor } : undefined
     return (
       <div className="badge-card template-studio" style={cardStyle}>
-        <div className="studio-top">
+        <div className="studio-top" style={topStyle}>
           <img
             src={studioLogoSrc}
             alt="MAGMA AMGM"
