@@ -1994,11 +1994,12 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 32mm;
+  flex: 0 0 22mm;
   background: #ffffff;
-  padding: 3mm 5mm 2.8mm 3.5mm;
+  padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;   /* anchor name/id/url to the bottom */
 }
 
 .template-studio .studio-name {
@@ -2021,7 +2022,7 @@
 }
 
 .template-studio .studio-id {
-  margin-top: 1.5mm;
+  margin-top: 1.2mm;
   font-size: 2.4mm;
   font-weight: 400;
   color: #2a2654;
@@ -2033,7 +2034,7 @@
 }
 
 .template-studio .studio-url {
-  margin-top: auto;
+  margin-top: 0.6mm;          /* ~80% tighter than the previous auto-push */
   font-size: 1.7mm;
   color: #6b6478;
   letter-spacing: 0.02mm;
@@ -2043,12 +2044,12 @@
    ("Learn" at the bottom, "Settle." at the top) */
 .template-studio .studio-tagline {
   position: absolute;
-  right: 1.8mm;
+  right: 1.6mm;
   top: 2mm;
-  bottom: 4mm;
+  bottom: 3mm;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: 1.9mm;
+  font-size: 2.6mm;
   font-weight: 500;
   color: #2a2654;
   letter-spacing: 0.03mm;
