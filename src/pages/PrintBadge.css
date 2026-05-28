@@ -1801,6 +1801,66 @@
   font-weight: 600;
 }
 
+/* ───── Crop modal ───── */
+.crop-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #0e0b1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.crop-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.crop-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #6b6478);
+  min-width: 48px;
+}
+
+.crop-slider {
+  flex: 1;
+  accent-color: #2a2654;
+}
+
+/* ───── Purple shade slider (inline next to the toggle button) ───── */
+.purple-shade-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(42, 38, 84, 0.05);
+  border-radius: 6px;
+}
+
+.purple-shade-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary, #6b6478);
+  white-space: nowrap;
+}
+
+.purple-shade-slider {
+  flex: 1;
+  min-width: 80px;
+  accent-color: #2a2654;
+}
+
+.purple-shade-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    STUDIO — editorial vertical card.
    Top: light-grey area with logo top-left and a clean headshot.

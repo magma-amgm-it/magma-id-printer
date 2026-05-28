@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, ChevronDown, X, User, Crosshair, Wand2
+  AlertCircle, ChevronDown, X, User, Crosshair, Wand2, Crop
 } from 'lucide-react'
 import FocalPointPicker from '../components/FocalPointPicker'
+import CropModal from '../components/CropModal'
 import Webcam from 'react-webcam'
 import toast from 'react-hot-toast'
 import {
@@ -47,6 +48,11 @@ export default function PrintBadge() {
   const [cutoutUrl, setCutoutUrl] = useState(null)
   const [purpleBg, setPurpleBg] = useState(false)
   const [isProcessingBg, setIsProcessingBg] = useState(false)
+  // 0 = lightest lavender, 100 = deepest brand purple. Default 70.
+  const [purpleShade, setPurpleShade] = useState(70)
+
+  // Crop modal
+  const [showCropModal, setShowCropModal] = useState(false)
 
   useEffect(() => {
     if (employeeId) {
@@ -78,6 +84,21 @@ export default function PrintBadge() {
     setCutoutUrl(null)
     setPurpleBg(false)
   }, [photoDataUrl])
+
+  function handleCropSave(croppedUrl) {
+    setPhotoDataUrl(croppedUrl)
+    setShowCropModal(false)
+    toast.success('Photo cropped')
+  }
+
+  // Map slider value (0-100) to a color between light lavender and brand purple.
+  function shadeToColor(shade) {
+    const t = Math.max(0, Math.min(100, shade)) / 100
+    const r = Math.round(217 - 175 * t)
+    const g = Math.round(212 - 174 * t)
+    const b = Math.round(230 - 146 * t)
+    return `rgb(${r}, ${g}, ${b})`
+  }
 
   async function togglePurpleBackground() {
     if (!photoDataUrl) return
@@ -353,6 +374,9 @@ export default function PrintBadge() {
                     <button className="btn btn-ghost btn-sm" onClick={() => setShowFocalPicker(true)}>
                       <Crosshair size={14} /> Adjust position
                     </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setShowCropModal(true)}>
+                      <Crop size={14} /> Crop
+                    </button>
                     {(template === 'studio' || template === 'studio2') && (
                       <button
                         className={`btn btn-ghost btn-sm${purpleBg ? ' btn-active' : ''}`}
@@ -368,6 +392,24 @@ export default function PrintBadge() {
                       </button>
                     )}
                   </div>
+                  {purpleBg && (template === 'studio' || template === 'studio2') && (
+                    <div className="purple-shade-row">
+                      <span className="purple-shade-label">Shade</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={purpleShade}
+                        onChange={(e) => setPurpleShade(Number(e.target.value))}
+                        className="purple-shade-slider"
+                      />
+                      <div
+                        className="purple-shade-swatch"
+                        style={{ background: shadeToColor(purpleShade) }}
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="photo-placeholder">
@@ -447,6 +489,7 @@ export default function PrintBadge() {
                 photoFocus={photoFocus}
                 cutoutUrl={cutoutUrl}
                 purpleBg={purpleBg}
+                purpleBgColor={shadeToColor(purpleShade)}
               />
             </div>
 
@@ -485,6 +528,18 @@ export default function PrintBadge() {
             value={photoFocus}
             onChange={handleSaveFocus}
             onClose={() => setShowFocalPicker(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Crop modal */}
+      <AnimatePresence>
+        {showCropModal && photoDataUrl && (
+          <CropModal
+            photoUrl={photoDataUrl}
+            aspect={3 / 4}
+            onChange={handleCropSave}
+            onClose={() => setShowCropModal(false)}
           />
         )}
       </AnimatePresence>
@@ -549,7 +604,7 @@ export default function PrintBadge() {
   )
 }
 
-function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, purpleBg }) {
+function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, purpleBg, purpleBgColor }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
@@ -818,7 +873,10 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, pu
             alt="MAGMA AMGM"
             className={`studio-logo${isWhiteLogo ? ' studio-logo--white' : ''}`}
           />
-          <div className={`studio-photo${showPurpleBg ? ' studio-photo--purple-bg' : ''}`}>
+          <div
+            className={`studio-photo${showPurpleBg ? ' studio-photo--purple-bg' : ''}`}
+            style={showPurpleBg && purpleBgColor ? { background: purpleBgColor } : undefined}
+          >
             {photoSrc ? (
               <img src={photoSrc} alt="" />
             ) : (
