@@ -746,7 +746,7 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
           <img
             src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
             alt="MAGMA AMGM"
-            className="studio-logo"
+            className="studio-logo studio-logo--white"
           />
           <div className="studio-photo">
             {photoDataUrl ? (

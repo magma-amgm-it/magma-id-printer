@@ -1821,6 +1821,8 @@
   overflow: hidden;
 }
 
+/* Position tuned for the COLORED magma-logo.png (has transparent padding).
+   If we ever swap back, this class alone gives the right look. */
 .template-studio .studio-logo {
   position: absolute;
   top: 2.8mm;
@@ -1828,6 +1830,12 @@
   height: 4.8mm;
   width: auto;
   z-index: 2;
+}
+
+/* The tight white logo (magma-logo-white-tight.png) has no transparent
+   padding, so it needs more left offset to feel visually balanced. */
+.template-studio .studio-logo.studio-logo--white {
+  left: 2.5mm;
 }
 
 .template-studio .studio-photo {
