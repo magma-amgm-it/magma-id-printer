@@ -377,6 +377,7 @@ export default function PrintBadge() {
                 <option value="mirror">Mirror</option>
                 <option value="portrait">Portrait</option>
                 <option value="studio">Studio</option>
+                <option value="studio2">Studio 2</option>
               </select>
               <ChevronDown size={16} className="template-select-icon" />
             </div>
@@ -733,20 +734,26 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
     )
   }
 
-  // Studio: editorial portrait. Logo top-left + clean photo, cream
+  // Studio: editorial portrait. Logo top-left + clean photo, white
   // footer with big orange name, EMPLOYEE ID line, vertical tagline
   // on the right edge, colored stripe at the bottom.
-  if (template === 'studio') {
+  // 'studio'  = white tight logo (default)
+  // 'studio2' = colored MAGMA AMGM logo
+  if (template === 'studio' || template === 'studio2') {
     const sFirst = employee.firstName || fullName.split(' ')[0] || ''
     const sLast =
       employee.lastName || fullName.split(' ').slice(1).join(' ') || ''
+    const isWhiteLogo = template === 'studio'
+    const studioLogoSrc = isWhiteLogo
+      ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
+      : logoSrc
     return (
       <div className="badge-card template-studio" style={cardStyle}>
         <div className="studio-top">
           <img
-            src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
+            src={studioLogoSrc}
             alt="MAGMA AMGM"
-            className="studio-logo studio-logo--white"
+            className={`studio-logo${isWhiteLogo ? ' studio-logo--white' : ''}`}
           />
           <div className="studio-photo">
             {photoDataUrl ? (
