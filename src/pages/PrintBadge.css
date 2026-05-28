@@ -1970,20 +1970,16 @@
 }
 
 /* When the user has replaced the photo background, the cutout PNG
-   sits on top of either brand purple or pure white. object-fit
-   becomes contain so the full subject is visible inside the field. */
+   has transparent pixels behind the subject — keeping object-fit
+   as the default `cover` lets the purple/white container color
+   show through those transparent areas. The cropped photo still
+   fills the area, and the focal-point picker keeps working. */
 .template-studio .studio-photo--purple-bg {
   background: #2a2654;
 }
 
 .template-studio .studio-photo--white-bg {
   background: #ffffff;
-}
-
-.template-studio .studio-photo--purple-bg img,
-.template-studio .studio-photo--white-bg img {
-  object-fit: contain;
-  object-position: center bottom;
 }
 
 .template-studio .studio-photo-placeholder {
