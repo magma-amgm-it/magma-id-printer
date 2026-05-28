@@ -1795,6 +1795,12 @@
   font-size: var(--text-base);
 }
 
+.btn-active {
+  background: rgba(42, 38, 84, 0.08);
+  color: #2a2654;
+  font-weight: 600;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    STUDIO — editorial vertical card.
    Top: light-grey area with logo top-left and a clean headshot.
@@ -1848,6 +1854,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* When the user has replaced the photo background, the cutout PNG
+   sits on top of this deep brand purple. object-fit becomes contain
+   so the full subject is visible inside the purple field. */
+.template-studio .studio-photo--purple-bg {
+  background: #2a2654;
+}
+
+.template-studio .studio-photo--purple-bg img {
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .template-studio .studio-photo-placeholder {

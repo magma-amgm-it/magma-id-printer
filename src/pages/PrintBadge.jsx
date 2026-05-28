@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, ChevronDown, X, User, Crosshair
+  AlertCircle, ChevronDown, X, User, Crosshair, Wand2
 } from 'lucide-react'
 import FocalPointPicker from '../components/FocalPointPicker'
 import Webcam from 'react-webcam'
@@ -41,6 +41,13 @@ export default function PrintBadge() {
   const [photoFocus, setPhotoFocus] = useState({ x: 50, y: 30 })
   const [showFocalPicker, setShowFocalPicker] = useState(false)
 
+  // Background removal (Studio templates only)
+  // cutoutUrl = cached transparent-background version of the current photo.
+  // purpleBg  = toggle on/off. Resets when photo or employee changes.
+  const [cutoutUrl, setCutoutUrl] = useState(null)
+  const [purpleBg, setPurpleBg] = useState(false)
+  const [isProcessingBg, setIsProcessingBg] = useState(false)
+
   useEffect(() => {
     if (employeeId) {
       loadEmployee(employeeId)
@@ -64,6 +71,42 @@ export default function PrintBadge() {
     } catch {}
     setShowFocalPicker(false)
     toast.success('Photo position saved')
+  }
+
+  // Reset the cutout whenever the photo changes (retake / upload / new emp).
+  useEffect(() => {
+    setCutoutUrl(null)
+    setPurpleBg(false)
+  }, [photoDataUrl])
+
+  async function togglePurpleBackground() {
+    if (!photoDataUrl) return
+    // Turning OFF — no processing needed.
+    if (purpleBg) {
+      setPurpleBg(false)
+      return
+    }
+    // Already processed — just flip on.
+    if (cutoutUrl) {
+      setPurpleBg(true)
+      return
+    }
+    // First time — lazy-load the model, process, cache.
+    setIsProcessingBg(true)
+    const t = toast.loading('Removing background… (first run downloads the model, ~30MB)')
+    try {
+      const { removeBackground } = await import('@imgly/background-removal')
+      const blob = await removeBackground(photoDataUrl)
+      const url = URL.createObjectURL(blob)
+      setCutoutUrl(url)
+      setPurpleBg(true)
+      toast.success('Background replaced', { id: t })
+    } catch (err) {
+      console.error('Background removal failed:', err)
+      toast.error('Could not remove background. Try a clearer photo.', { id: t })
+    } finally {
+      setIsProcessingBg(false)
+    }
   }
 
   async function loadEmployee(id) {
@@ -310,6 +353,20 @@ export default function PrintBadge() {
                     <button className="btn btn-ghost btn-sm" onClick={() => setShowFocalPicker(true)}>
                       <Crosshair size={14} /> Adjust position
                     </button>
+                    {(template === 'studio' || template === 'studio2') && (
+                      <button
+                        className={`btn btn-ghost btn-sm${purpleBg ? ' btn-active' : ''}`}
+                        onClick={togglePurpleBackground}
+                        disabled={isProcessingBg}
+                      >
+                        <Wand2 size={14} />
+                        {isProcessingBg
+                          ? 'Processing…'
+                          : purpleBg
+                          ? 'Purple bg: ON'
+                          : 'Purple background'}
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -388,6 +445,8 @@ export default function PrintBadge() {
                 employee={employee}
                 photoDataUrl={photoDataUrl}
                 photoFocus={photoFocus}
+                cutoutUrl={cutoutUrl}
+                purpleBg={purpleBg}
               />
             </div>
 
@@ -411,6 +470,8 @@ export default function PrintBadge() {
               employee={employee}
               photoDataUrl={photoDataUrl}
               photoFocus={photoFocus}
+              cutoutUrl={cutoutUrl}
+              purpleBg={purpleBg}
             />
           </div>
         )}
@@ -488,7 +549,7 @@ export default function PrintBadge() {
   )
 }
 
-function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
+function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, purpleBg }) {
   const logoSrc = import.meta.env.BASE_URL + 'magma-logo.png'
   const logoWhiteSrc = import.meta.env.BASE_URL + 'magma-logo-white.png'
   const buildingSrc = import.meta.env.BASE_URL + 'magma-building.jpg'
@@ -747,6 +808,8 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
     const studioLogoSrc = isWhiteLogo
       ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
       : logoSrc
+    const showPurpleBg = purpleBg && cutoutUrl
+    const photoSrc = showPurpleBg ? cutoutUrl : photoDataUrl
     return (
       <div className="badge-card template-studio" style={cardStyle}>
         <div className="studio-top">
@@ -755,9 +818,9 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
             alt="MAGMA AMGM"
             className={`studio-logo${isWhiteLogo ? ' studio-logo--white' : ''}`}
           />
-          <div className="studio-photo">
-            {photoDataUrl ? (
-              <img src={photoDataUrl} alt="" />
+          <div className={`studio-photo${showPurpleBg ? ' studio-photo--purple-bg' : ''}`}>
+            {photoSrc ? (
+              <img src={photoSrc} alt="" />
             ) : (
               <div className="studio-photo-placeholder">
                 <User size={32} strokeWidth={1} />
