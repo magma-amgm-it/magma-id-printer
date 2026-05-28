@@ -743,7 +743,11 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus }) {
     return (
       <div className="badge-card template-studio" style={cardStyle}>
         <div className="studio-top">
-          <img src={logoSrc} alt="MAGMA AMGM" className="studio-logo" />
+          <img
+            src={import.meta.env.BASE_URL + 'magma-logo-white-tight.png'}
+            alt="MAGMA AMGM"
+            className="studio-logo"
+          />
           <div className="studio-photo">
             {photoDataUrl ? (
               <img src={photoDataUrl} alt="" />
