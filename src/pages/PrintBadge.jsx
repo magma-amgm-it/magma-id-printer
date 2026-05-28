@@ -917,7 +917,7 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
             {sLast && <span className="studio-name-line">{sLast}</span>}
           </div>
           <div className="studio-id">
-            EMPLOYEE ID: <span className="studio-id-value">{employeeId}</span>
+            ID: <span className="studio-id-value">{employeeId}</span>
           </div>
           <div className="studio-url">www.magma-amgm.org</div>
           <div className="studio-tagline">Learn. Connect. Settle.</div>
