@@ -1927,11 +1927,13 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Top area: photo + floating logo */
+/* Top area: photo + floating logo. The clean white strip above the
+   photo gives the logo room to breathe and clearly separates it
+   from the headshot. */
 .template-studio .studio-top {
   position: relative;
   flex: 1 1 auto;
-  background: #f3f1f1;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -1954,7 +1956,10 @@
 
 .template-studio .studio-photo {
   position: absolute;
-  inset: 0;
+  top: 9mm;          /* leaves a clean white band above the photo */
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 1;
 }
 
@@ -2045,14 +2050,15 @@
 .template-studio .studio-tagline {
   position: absolute;
   right: 1.6mm;
-  top: 2mm;
-  bottom: 3mm;
+  top: 1mm;
+  bottom: 1mm;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: 2.6mm;
+  white-space: nowrap;         /* keep "Learn. Connect. Settle." on one line */
+  font-size: 1.7mm;
   font-weight: 500;
   color: #2a2654;
-  letter-spacing: 0.03mm;
+  letter-spacing: 0.02mm;
   display: flex;
   align-items: center;
 }
