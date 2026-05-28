@@ -1999,7 +1999,7 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 22mm;
+  flex: 0 0 26mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
@@ -2014,7 +2014,7 @@
   color: #ee8a26;
   font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
-  font-size: 6mm;
+  font-size: 5.2mm;
   letter-spacing: -0.05mm;
   max-width: 41mm;       /* leaves room for the vertical tagline */
 }
@@ -2050,12 +2050,12 @@
 .template-studio .studio-tagline {
   position: absolute;
   right: 1.6mm;
-  top: 1mm;
-  bottom: 1mm;
+  top: 0.8mm;
+  bottom: 2mm;                 /* aligns L of "Learn" with the URL baseline */
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   white-space: nowrap;         /* keep "Learn. Connect. Settle." on one line */
-  font-size: 1.7mm;
+  font-size: 2mm;
   font-weight: 500;
   color: #2a2654;
   letter-spacing: 0.02mm;
