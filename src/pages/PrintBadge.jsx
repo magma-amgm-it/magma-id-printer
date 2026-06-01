@@ -922,8 +922,6 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
           <div className="studio-id">
             ID: <span className="studio-id-value">{employeeId}</span>
           </div>
-          <div className="studio-url">www.magma-amgm.org</div>
-          <div className="studio-tagline">Learn. Connect. Settle.</div>
         </div>
         <div className="studio-stripe">
           <div className="studio-stripe-segment seg-pink" />
