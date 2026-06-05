@@ -871,9 +871,10 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
   // 'studio'  = white tight logo (default)
   // 'studio2' = colored MAGMA AMGM logo
   if (template === 'studio' || template === 'studio2') {
-    // Studio renders firstName + lastName (the base fullName variable
-    // is "lastName firstName" for legacy reasons; we override here).
-    const sFull = `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || fullName
+    // Studio renders firstName on top, lastName below (the base
+    // fullName variable is "lastName firstName" for legacy reasons).
+    const sFirst = employee.firstName || ''
+    const sLast = employee.lastName || ''
     const isWhiteLogo = template === 'studio'
     const studioLogoSrc = isWhiteLogo
       ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
@@ -915,7 +916,10 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
           </div>
         </div>
         <div className="studio-bottom">
-          <div className="studio-name">{sFull}</div>
+          <div className="studio-name">
+            <span className="studio-name-line">{sFirst}</span>
+            {sLast && <span className="studio-name-line">{sLast}</span>}
+          </div>
           <div className="studio-id">
             ID: <span className="studio-id-value">{employeeId}</span>
           </div>

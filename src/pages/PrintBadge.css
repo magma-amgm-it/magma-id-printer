@@ -1995,7 +1995,7 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 16mm;
+  flex: 0 0 24mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
@@ -2004,23 +2004,30 @@
 }
 
 .template-studio .studio-name {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;          /* center each line horizontally */
   text-align: center;
-  line-height: 1.05;
+  line-height: 0.98;
   color: #ee8a26;
   font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
-  font-size: 4.4mm;
+  font-size: 5.2mm;
   letter-spacing: -0.05mm;
+}
+
+.template-studio .studio-name-line {
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .template-studio .studio-id {
   margin-top: 1.8mm;
   text-align: center;
-  font-size: 2.4mm;
+  font-size: 3mm;
   font-weight: 700;
   color: #2a2654;
   letter-spacing: 0.02mm;
