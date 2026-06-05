@@ -871,7 +871,9 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
   // 'studio'  = white tight logo (default)
   // 'studio2' = colored MAGMA AMGM logo
   if (template === 'studio' || template === 'studio2') {
-    const sFull = fullName || `${employee.firstName || ''} ${employee.lastName || ''}`.trim()
+    // Studio renders firstName + lastName (the base fullName variable
+    // is "lastName firstName" for legacy reasons; we override here).
+    const sFull = `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || fullName
     const isWhiteLogo = template === 'studio'
     const studioLogoSrc = isWhiteLogo
       ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'

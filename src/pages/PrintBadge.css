@@ -1995,12 +1995,12 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 26mm;
+  flex: 0 0 16mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;   /* anchor name/id/url to the bottom */
+  justify-content: flex-end;   /* anchor name + id to the bottom */
 }
 
 .template-studio .studio-name {
