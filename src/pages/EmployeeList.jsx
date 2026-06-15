@@ -10,6 +10,7 @@ import './EmployeeList.css'
 const ADMIN_EMAIL = 'abhishek.desai@magma-amgm.org'
 
 const EMPTY_FORM = {
+  employeeId: '',
   firstName: '',
   lastName: '',
   department: '',
@@ -105,14 +106,35 @@ export default function EmployeeList() {
       return
     }
 
+    const enteredId = addForm.employeeId.trim()
+
+    // If the operator entered an Employee ID, make sure it's not already in use.
+    if (enteredId) {
+      const collision = employees.find((e) => e.employeeId === enteredId)
+      if (collision) {
+        toast.error(`Employee ID "${enteredId}" is already in use.`)
+        return
+      }
+    }
+
     setAdding(true)
     try {
-      const nextNum = employees.length + 1
-      const employeeId = `EMP-${String(nextNum).padStart(4, '0')}`
+      let employeeId = enteredId
+      if (!employeeId) {
+        // Fall back to auto-generated EMP-XXXX only when the field is blank.
+        // Use the highest existing EMP-#### + 1 so we don't collide with
+        // operator-entered IDs that came in between auto-numbered ones.
+        const existingNums = employees
+          .map((e) => /^EMP-(\d+)$/.exec(e.employeeId)?.[1])
+          .filter(Boolean)
+          .map(Number)
+        const nextNum = (existingNums.length ? Math.max(...existingNums) : 0) + 1
+        employeeId = `EMP-${String(nextNum).padStart(4, '0')}`
+      }
 
       await createEmployee({
-        employeeId,
         ...addForm,
+        employeeId,
       })
 
       toast.success(`Added ${addForm.firstName} ${addForm.lastName}!`)
@@ -310,11 +332,21 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
   if (!show) return null
 
   const fields = [
+    {
+      key: 'employeeId',
+      label: 'Employee ID',
+      fullWidth: true,
+      hint: 'Leave blank to auto-generate (EMP-####). Type the real ID here for new hires (e.g. 6BV001516).',
+    },
     { key: 'firstName', label: 'First Name', required: true },
     { key: 'lastName', label: 'Last Name', required: true },
     { key: 'department', label: 'Department' },
     { key: 'jobTitle', label: 'Job Title' },
-    { key: 'badgeNumber', label: 'Badge Number' },
+    {
+      key: 'badgeNumber',
+      label: 'Badge Number',
+      hint: 'Physical card serial — leave blank if not applicable.',
+    },
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Phone' },
   ]
@@ -344,8 +376,11 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
           </div>
           <div className="modal-body">
             <div className="add-form">
-              {fields.map(({ key, label, required }) => (
-                <div key={key} className="form-field">
+              {fields.map(({ key, label, required, hint, fullWidth }) => (
+                <div
+                  key={key}
+                  className={`form-field${fullWidth ? ' form-field-full' : ''}`}
+                >
                   <label className="form-label">
                     {label}
                     {required && <span style={{ color: 'var(--accent-danger)' }}> *</span>}
@@ -357,6 +392,7 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
                     onChange={(e) => onChange(key, e.target.value)}
                     placeholder={`Enter ${label.toLowerCase()}`}
                   />
+                  {hint && <div className="form-hint">{hint}</div>}
                 </div>
               ))}
             </div>
