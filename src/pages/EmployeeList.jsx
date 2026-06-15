@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, User, Camera, Printer, Upload, UserCircle, Trash2, Plus, X, Check } from 'lucide-react'
@@ -340,7 +341,11 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
     { key: 'phone', label: 'Phone' },
   ]
 
-  return (
+  // Portal to document.body so the modal escapes the page-content's
+  // transformed/blurred ancestors (framer-motion transform on PageWrapper
+  // + backdrop-filter on the topbar both create a containing block that
+  // would otherwise trap our position: fixed overlay inside the page area).
+  return createPortal(
     <AnimatePresence>
       <motion.div
         className="modal-overlay"
@@ -405,6 +410,7 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }
