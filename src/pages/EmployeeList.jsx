@@ -15,7 +15,6 @@ const EMPTY_FORM = {
   lastName: '',
   department: '',
   jobTitle: '',
-  badgeNumber: '',
   email: '',
   phone: '',
 }
@@ -332,21 +331,11 @@ function AddEmployeeModal({ show, form, adding, onChange, onSave, onClose }) {
   if (!show) return null
 
   const fields = [
-    {
-      key: 'employeeId',
-      label: 'Employee ID',
-      fullWidth: true,
-      hint: 'Leave blank to auto-generate (EMP-####). Type the real ID here for new hires (e.g. 6BV001516).',
-    },
     { key: 'firstName', label: 'First Name', required: true },
     { key: 'lastName', label: 'Last Name', required: true },
     { key: 'department', label: 'Department' },
     { key: 'jobTitle', label: 'Job Title' },
-    {
-      key: 'badgeNumber',
-      label: 'Badge Number',
-      hint: 'Physical card serial — leave blank if not applicable.',
-    },
+    { key: 'employeeId', label: 'Employee ID' },
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Phone' },
   ]
