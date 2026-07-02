@@ -435,7 +435,7 @@ export default function PrintBadge() {
                     <button className="btn btn-ghost btn-sm" onClick={() => setShowCropModal(true)}>
                       <Crop size={14} /> Crop
                     </button>
-                    {(template === 'studio' || template === 'studio2') && (
+                    {(template === 'studio' || template === 'studio2' || template === 'wow') && (
                       <div className="bg-mode-picker">
                         <span className="bg-mode-label">
                           <Wand2 size={11} style={{ verticalAlign: '-1px' }} /> Bg
@@ -560,6 +560,7 @@ export default function PrintBadge() {
                 <option value="portrait">Portrait</option>
                 <option value="studio">Studio</option>
                 <option value="studio2">Studio 2</option>
+                <option value="wow">WOW</option>
               </select>
               <ChevronDown size={16} className="template-select-icon" />
             </div>
@@ -1024,19 +1025,20 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
     )
   }
 
-  // Studio: editorial portrait. Logo top-left + clean photo, white
-  // footer with big orange name, EMPLOYEE ID line, vertical tagline
-  // on the right edge, colored stripe at the bottom.
-  // 'studio'  = white tight logo (default)
-  // 'studio2' = colored MAGMA AMGM logo
-  if (template === 'studio' || template === 'studio2') {
-    // Studio renders firstName on top, lastName below (the base
-    // fullName variable is "lastName firstName" for legacy reasons).
+  // Studio: editorial portrait. Logo top + clean photo, white footer
+  // with name + optional job title + ID, colored stripe at the bottom.
+  // 'studio'  = white MAGMA logo (purple header band)
+  // 'studio2' = colored MAGMA logo (white header)
+  // 'wow'     = WOW logo centered, teal text, orange single-color stripe
+  if (template === 'studio' || template === 'studio2' || template === 'wow') {
     const sFirst = employee.firstName || ''
     const sLast = employee.lastName || ''
     const isWhiteLogo = template === 'studio'
+    const isWow = template === 'wow'
     const studioLogoSrc = isWhiteLogo
       ? import.meta.env.BASE_URL + 'magma-logo-white-tight.png'
+      : isWow
+      ? import.meta.env.BASE_URL + 'wow-logo.png'
       : logoSrc
     const bgActive = (bgMode === 'purple' || bgMode === 'white') && cutoutUrl
     const photoSrc = bgActive ? cutoutUrl : photoDataUrl
@@ -1051,15 +1053,22 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
         ? { background: purpleBgColor }
         : undefined
     // Studio (white logo) needs a purple header band so the white
-    // wordmark is legible. Studio 2 (colored logo) keeps the white band.
+    // wordmark is legible. Studio 2 + WOW keep the white band.
     const topStyle = isWhiteLogo ? { background: purpleBgColor } : undefined
+    const logoAlt = isWow ? 'World of Wonders' : 'MAGMA AMGM'
+    const logoModifier = isWhiteLogo
+      ? ' studio-logo--white'
+      : isWow
+      ? ' studio-logo--wow'
+      : ''
+    const wowClass = isWow ? ' template-wow' : ''
     return (
-      <div className="badge-card template-studio" style={cardStyle}>
+      <div className={`badge-card template-studio${wowClass}`} style={cardStyle}>
         <div className="studio-top" style={topStyle}>
           <img
             src={studioLogoSrc}
-            alt="MAGMA AMGM"
-            className={`studio-logo${isWhiteLogo ? ' studio-logo--white' : ''}`}
+            alt={logoAlt}
+            className={`studio-logo${logoModifier}`}
           />
           <div
             className={`studio-photo${bgClass}`}

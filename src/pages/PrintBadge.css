@@ -2096,6 +2096,36 @@
 .template-studio .seg-orange { background: #ee8a26; }
 .template-studio .seg-blue   { background: #2b6dd7; }
 
+/* ═══════════════════════════════════════════════════════════════════
+   WOW variant of the Studio template.
+   Applied via .template-wow modifier on the same .template-studio card.
+   Overrides: centered WOW logo, teal name / title / ID, single-color
+   orange stripe at the bottom.
+   ═══════════════════════════════════════════════════════════════════ */
+.template-studio.template-wow .studio-logo {
+  left: 50%;
+  transform: translateX(-50%);
+  height: 7.5mm;
+  max-width: 40mm;
+}
+
+.template-studio.template-wow .studio-logo.studio-logo--wow {
+  left: 50%;         /* override the wow-specific modifier defaults */
+}
+
+.template-studio.template-wow .studio-name {
+  color: #2a6a7c;
+}
+
+.template-studio.template-wow .studio-jobtitle,
+.template-studio.template-wow .studio-id {
+  color: #2a6a7c;
+}
+
+.template-studio.template-wow .studio-stripe-segment {
+  background: #e7885b;
+}
+
 /* Hide unused generic elements */
 .template-studio .badge-header-bar { display: none; }
 .template-studio .badge-body-area { display: none; }
