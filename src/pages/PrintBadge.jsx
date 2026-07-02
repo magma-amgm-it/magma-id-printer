@@ -920,6 +920,9 @@ function BadgeCard({ template, employee, photoDataUrl, photoFocus, cutoutUrl, bg
             <span className="studio-name-line">{sFirst}</span>
             {sLast && <span className="studio-name-line">{sLast}</span>}
           </div>
+          {employee.jobTitle && (
+            <div className="studio-jobtitle">{employee.jobTitle}</div>
+          )}
           <div className="studio-id">
             ID: <span className="studio-id-value">{employeeId}</span>
           </div>

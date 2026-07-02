@@ -1995,12 +1995,12 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 24mm;
+  flex: 0 0 28mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;   /* anchor name + id to the bottom */
+  justify-content: flex-end;   /* anchor name + title + id to the bottom */
 }
 
 .template-studio .studio-name {
@@ -2024,8 +2024,22 @@
   max-width: 100%;
 }
 
+.template-studio .studio-jobtitle {
+  margin-top: 1.5mm;
+  text-align: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 3.6mm;
+  font-weight: 500;
+  color: #2a2654;
+  letter-spacing: 0.01mm;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .template-studio .studio-id {
-  margin-top: 1.8mm;
+  margin-top: 1.2mm;
   text-align: center;
   font-size: 3mm;
   font-weight: 700;
