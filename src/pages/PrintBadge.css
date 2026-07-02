@@ -1995,7 +1995,7 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 28mm;
+  flex: 0 0 32mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
@@ -2025,17 +2025,21 @@
 }
 
 .template-studio .studio-jobtitle {
-  margin-top: 1.5mm;
+  margin-top: 1.2mm;
   text-align: center;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 3.6mm;
+  font-size: 3.4mm;
   font-weight: 500;
   color: #2a2654;
   letter-spacing: 0.01mm;
-  line-height: 1.2;
-  white-space: nowrap;
+  line-height: 1.15;
+  /* Wrap up to 2 lines; if longer than that, ellipsis on the second */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  padding: 0 1.5mm;
 }
 
 .template-studio .studio-id {
