@@ -1995,7 +1995,7 @@
 /* Bottom: clean white editorial panel */
 .template-studio .studio-bottom {
   position: relative;
-  flex: 0 0 32mm;
+  flex: 0 0 26mm;
   background: #ffffff;
   padding: 2mm 5mm 2mm 3.5mm;
   display: flex;
