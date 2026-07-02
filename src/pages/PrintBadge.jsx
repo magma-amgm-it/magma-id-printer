@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import {
   Camera, Upload, RotateCcw, Printer, Search, Check,
-  AlertCircle, ChevronDown, X, User, Crosshair, Wand2, Crop
+  AlertCircle, ChevronDown, X, User, Crosshair, Wand2, Crop, Pencil
 } from 'lucide-react'
 import FocalPointPicker from '../components/FocalPointPicker'
 import CropModal from '../components/CropModal'
@@ -41,6 +42,17 @@ export default function PrintBadge() {
   // Focal point picker — per-employee, stored in localStorage
   const [photoFocus, setPhotoFocus] = useState({ x: 50, y: 30 })
   const [showFocalPicker, setShowFocalPicker] = useState(false)
+
+  // Edit employee modal
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editForm, setEditForm] = useState({
+    firstName: '',
+    lastName: '',
+    employeeId: '',
+    department: '',
+    jobTitle: '',
+  })
+  const [savingEdit, setSavingEdit] = useState(false)
 
   // Background removal (Studio templates only)
   // cutoutUrl = cached transparent-background version of the current photo.
@@ -89,6 +101,52 @@ export default function PrintBadge() {
     setPhotoDataUrl(croppedUrl)
     setShowCropModal(false)
     toast.success('Photo cropped')
+  }
+
+  function openEditModal() {
+    if (!employee) return
+    setEditForm({
+      firstName: employee.firstName || '',
+      lastName: employee.lastName || '',
+      employeeId: employee.employeeId || '',
+      department: employee.department || '',
+      jobTitle: employee.jobTitle || '',
+    })
+    setShowEditModal(true)
+  }
+
+  async function handleSaveEdit() {
+    if (!employee) return
+    if (!editForm.firstName.trim() && !editForm.lastName.trim()) {
+      toast.error('Please enter at least a first or last name.')
+      return
+    }
+    setSavingEdit(true)
+    try {
+      await updateEmployee(employee.id, {
+        FirstName: editForm.firstName,
+        LastName: editForm.lastName,
+        Title: editForm.employeeId,   // Title == EmployeeID in SharePoint
+        Department: editForm.department,
+        JobTitle: editForm.jobTitle,
+      })
+      setEmployee((prev) => ({
+        ...prev,
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        fullName: `${editForm.lastName} ${editForm.firstName}`.trim(),
+        employeeId: editForm.employeeId,
+        department: editForm.department,
+        jobTitle: editForm.jobTitle,
+      }))
+      toast.success('Employee updated!')
+      setShowEditModal(false)
+    } catch (err) {
+      console.error('Update failed:', err)
+      toast.error(`Update failed: ${err.message}`)
+    } finally {
+      setSavingEdit(false)
+    }
   }
 
   // Map slider value (0-100) to a color between light lavender and brand purple.
@@ -453,18 +511,29 @@ export default function PrintBadge() {
 
             {/* Employee Info Summary */}
             <div className="employee-info-card">
+              <div className="info-row" style={{ justifyContent: 'flex-end', borderBottom: 'none', paddingBottom: 0 }}>
+                <button className="btn btn-ghost btn-sm" onClick={openEditModal}>
+                  <Pencil size={14} /> Edit
+                </button>
+              </div>
               <div className="info-row">
                 <span className="info-label">Name</span>
                 <span className="info-value">{employee.fullName || `${employee.firstName} ${employee.lastName}`}</span>
               </div>
               <div className="info-row">
                 <span className="info-label">Employee ID</span>
-                <span className="info-value mono">{employee.badgeNumber || employee.employeeId}</span>
+                <span className="info-value mono">{employee.employeeId}</span>
               </div>
               <div className="info-row">
                 <span className="info-label">Staff Type</span>
                 <span className="info-value">{employee.department || 'MAGMA'}</span>
               </div>
+              {employee.jobTitle && (
+                <div className="info-row">
+                  <span className="info-label">Job Title</span>
+                  <span className="info-value">{employee.jobTitle}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -558,6 +627,96 @@ export default function PrintBadge() {
           />
         )}
       </AnimatePresence>
+
+      {/* Edit Employee Modal — portaled so it centers on the viewport */}
+      {showEditModal && createPortal(
+        <AnimatePresence>
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowEditModal(false)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: 520 }}
+            >
+              <div className="modal-header">
+                <h3>Edit Employee</h3>
+                <button className="modal-close" onClick={() => setShowEditModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="add-form">
+                  <div className="form-field">
+                    <label className="form-label">First Name<span style={{ color: 'var(--accent-danger)' }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.firstName}
+                      onChange={(e) => setEditForm((p) => ({ ...p, firstName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Last Name<span style={{ color: 'var(--accent-danger)' }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.lastName}
+                      onChange={(e) => setEditForm((p) => ({ ...p, lastName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Employee ID</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.employeeId}
+                      onChange={(e) => setEditForm((p) => ({ ...p, employeeId: e.target.value }))}
+                      placeholder="e.g. 6BV001516"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Staff Type</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.department}
+                      onChange={(e) => setEditForm((p) => ({ ...p, department: e.target.value }))}
+                      placeholder="MAGMA, WoW..."
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label className="form-label">Job Title</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.jobTitle}
+                      onChange={(e) => setEditForm((p) => ({ ...p, jobTitle: e.target.value }))}
+                      placeholder="Chief Executive Officer, Coordinator..."
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-ghost" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={handleSaveEdit} disabled={savingEdit}>
+                  {savingEdit ? 'Saving...' : (<><Check size={16} /> Save Changes</>)}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>,
+        document.body,
+      )}
 
       {/* Print Modal */}
       <AnimatePresence>
